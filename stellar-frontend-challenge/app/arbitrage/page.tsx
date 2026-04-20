@@ -1,7 +1,5 @@
 "use client";
 
-import Link from 'next/link';
-import dynamic from 'next/dynamic';
 import React, { useState, useEffect } from 'react';
 import { useStellar } from '@/context/StellarContext';
 import { stellar } from '@/lib/stellar-helper';
@@ -47,12 +45,13 @@ export default function ArbitrageExecutionPage() {
       } else {
         alert(`Execution failed: ${result.error}`);
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error("Arb execution error:", e);
-      if (e.message?.includes("User rejected")) {
+      const message = e instanceof Error ? e.message : String(e);
+      if (message.includes("User rejected")) {
         alert("Transaction was rejected by the user.");
       } else {
-        alert(`Execution error: ${e.message}`);
+        alert(`Execution error: ${message}`);
       }
     } finally {
       setIsExecuting(false);

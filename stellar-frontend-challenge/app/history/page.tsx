@@ -21,6 +21,13 @@ export default function TransactionHistoryPage() {
           <h2 className="text-4xl md:text-5xl font-lora font-semibold text-white mb-2">Ledger History</h2>
           <p className="text-gray-400 text-sm max-w-lg">Comprehensive record of all on-chain executions and treasury movements.</p>
         </div>
+        <button 
+          onClick={() => setRefreshKey(prev => prev + 1)}
+          className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-all text-xs font-bold uppercase tracking-widest text-white/80"
+        >
+          <span className="material-symbols-outlined text-sm">refresh</span>
+          Refresh Data
+        </button>
       </div>
 
       {/* Summary Metrics (Real data only) */}
