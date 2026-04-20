@@ -21,7 +21,7 @@ jobs:
           cache-dependency-path: 'stellar-frontend-challenge/package-lock.json'
       - name: Install Dependencies
         working-directory: ./stellar-frontend-challenge
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Lint
         working-directory: ./stellar-frontend-challenge
         run: npm run lint
