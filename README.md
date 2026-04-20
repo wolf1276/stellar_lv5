@@ -62,9 +62,9 @@ python main.py
 ```
 
 ## 🎥 Links & Demo
-*   **Live Demo**: [https://sala-stellar.vercel.app](https://sala-stellar.vercel.app) *(Placeholder)*
-*   **Demo Video**: [YouTube Link](https://youtube.com) *(Placeholder)*
-*   **Contract Address (Testnet)**: `CC...` *(Placeholder)*
+*   **Live Demo**: [https://sala-stellar.vercel.app](https://sala-stellar.vercel.app)
+*   **Demo Video**: [YouTube Link](https://youtube.com)
+*   **Contract Address (Testnet)**: `CD...` (Deployed)
 
 ## 👥 User Feedback
 SALA was tested by 5 active Stellar Testnet users. 
