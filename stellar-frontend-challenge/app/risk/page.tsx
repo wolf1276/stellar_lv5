@@ -6,10 +6,11 @@ import { stellar } from '@/lib/stellar-helper';
 import { calculateHealthFactor, getHealthStatus, Position } from '@/lib/liquidation';
 import dynamic from 'next/dynamic';
 
-export default function RiskDashboardPage() {
+export default function ProfitSimulatorPage() {
+  const [capital, setCapital] = useState(10000);
   const { address, kit } = useStellar();
   const [isLiquidating, setIsLiquidating] = useState(false);
-  const [position, setPosition] = useState<Position>({
+  const [position] = useState<Position>({
     collateralAmount: 1000,
     collateralPrice: 0.12,
     debtAmount: 50,
