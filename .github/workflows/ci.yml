@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: 'stellar-frontend-challenge/package.json'
+          cache-dependency-path: 'stellar-frontend-challenge/package-lock.json'
       - name: Install Dependencies
         working-directory: ./stellar-frontend-challenge
         run: npm install
@@ -35,10 +35,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-node@v4 # Using setup-node just to check checkout, wait should use setup-python
-        with:
-          node-version: '20' # Placeholder
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
