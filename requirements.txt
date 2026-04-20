@@ -1,0 +1,7 @@
+stellar-sdk>=9.0.0
+requests
+aiohttp
+python-dotenv
+numpy
+pandas
+rich
