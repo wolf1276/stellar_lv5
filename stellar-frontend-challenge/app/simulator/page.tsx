@@ -6,17 +6,59 @@ import { stellar } from '@/lib/stellar-helper';
 export default function ProfitSimulatorPage() {
   const [capital, setCapital] = useState(10000);
   const [leverage, setLeverage] = useState(1.0);
+  const [horizon, setHorizon] = useState('4H');
   const [xlmPrice, setXlmPrice] = useState<number | null>(null);
 
+  const hasFetched = React.useRef(false);
+  
   useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+    
     async function fetchPrice() {
-      const price = await stellar.getPoolPrice('XLM', 'USDC', undefined, 'GBBD67V63DU7T7WGXX3ZW3SJGR4FB46GEHACXDVOFY76NCO27LYA6AXY');
-      setXlmPrice(price);
+      try {
+        const price = await stellar.getPoolPrice('XLM', 'USDC', undefined, 'GBBD67V63DU7T7WGXX3ZW3SJGR4FB46GEHACXDVOFY76NCO27LYA6AXY');
+        // If price is null or 0, fallback to a mock realistic value for the simulator
+        setXlmPrice(price && price > 0 ? price : 0.115);
+      } catch (e) {
+        console.error("Failed to fetch pool price in simulator", e);
+        setXlmPrice(0.115); // Fallback
+      }
     }
     fetchPrice();
   }, []);
 
-  const expectedReturn = (capital * leverage * 0.042).toFixed(2);
+  const horizonMultipliers: Record<string, number> = {
+    '1H': 0.25,
+    '4H': 1,
+    '24H': 6,
+    '7D': 42
+  };
+  const currentMultiplier = horizonMultipliers[horizon] || 1;
+  const expectedReturn = (capital * leverage * 0.042 * currentMultiplier).toFixed(2);
+
+  // Dynamically generate SVG path based on inputs
+  const generatePath = (cap: number, lev: number, isOptimized: boolean) => {
+    const startY = 85; 
+    const normalizedCap = Math.max(0.1, cap / 100000); 
+    const normalizedLev = Math.max(0.1, lev / 10);
+    const normalizedTime = Math.max(0.2, currentMultiplier / 6); // scale based on time
+    
+    // Calculate the end Y position (lower Y is higher visually on SVG)
+    const boost = isOptimized ? 1.5 : 0.7;
+    const endY = Math.max(10, 85 - (normalizedCap * 30 + normalizedLev * 20 + normalizedTime * 20) * boost);
+    const midY = (startY + endY) / 2;
+    
+    if (isOptimized) {
+      return `M0 ${startY} Q 30 ${midY + 5}, 50 ${midY - 10} T 80 ${endY + 10} T 100 ${endY}`;
+    } else {
+      return `M0 ${startY} Q 25 ${midY + 15}, 45 ${midY + 5} T 75 ${endY + 20} T 100 ${endY + 15}`;
+    }
+  };
+
+  const optimizedPath = generatePath(capital, leverage, true);
+  const basePath = generatePath(capital, leverage, false);
+  const fillPath = `${optimizedPath} L 100 100 L 0 100 Z`;
 
   return (
     <div className="px-6 md:px-12 pb-24 max-w-7xl mx-auto w-full flex flex-col gap-12">
@@ -85,7 +127,10 @@ export default function ProfitSimulatorPage() {
               <label className="block text-xs font-bold text-white/60 uppercase tracking-widest mb-4">Horizon</label>
               <div className="flex gap-2">
                 {['1H', '4H', '24H', '7D'].map((time) => (
-                  <button key={time} className={`flex-1 py-2 rounded-lg text-[10px] font-bold border transition-all ${time === '4H' ? 'bg-primary/10 border-primary/50 text-primary' : 'bg-white/5 border-white/10 text-white/40 hover:text-white hover:border-white/20'}`}>
+                  <button 
+                    key={time} 
+                    onClick={() => setHorizon(time)}
+                    className={`flex-1 py-2 rounded-lg text-[10px] font-bold border transition-all ${time === horizon ? 'bg-primary/10 border-primary/50 text-primary' : 'bg-white/5 border-white/10 text-white/40 hover:text-white hover:border-white/20'}`}>
                     {time}
                   </button>
                 ))}
@@ -143,9 +188,9 @@ export default function ProfitSimulatorPage() {
 
             <div className="flex-grow relative min-h-[300px] z-10 flex items-end">
               <svg className="absolute inset-0 h-full w-full" preserveAspectRatio="none" viewBox="0 0 100 100">
-                <path d="M0 80 Q 25 70, 50 40 T 80 20 T 100 10" fill="none" stroke="#FDDA24" strokeWidth="2" className="opacity-20"></path>
-                <path d="M0 80 Q 20 75, 40 60 T 70 50 T 100 45" fill="none" stroke="white" strokeDasharray="2 2" strokeWidth="0.5" className="opacity-10"></path>
-                <path d="M0 80 Q 25 70, 50 40 T 80 20 T 100 10 L 100 100 L 0 100 Z" fill="url(#yellow-glow)" opacity="0.05"></path>
+                <path d={optimizedPath} fill="none" stroke="#FDDA24" strokeWidth="2" className="opacity-40 transition-all duration-700 ease-out"></path>
+                <path d={basePath} fill="none" stroke="white" strokeDasharray="2 2" strokeWidth="0.5" className="opacity-20 transition-all duration-700 ease-out"></path>
+                <path d={fillPath} fill="url(#yellow-glow)" opacity="0.1" className="transition-all duration-700 ease-out"></path>
                 <defs>
                   <linearGradient id="yellow-glow" x1="0%" x2="0%" y1="0%" y2="100%">
                     <stop offset="0%" stopColor="#FDDA24"></stop>
