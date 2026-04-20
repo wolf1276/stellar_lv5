@@ -4,7 +4,8 @@ import {
   Networks, 
   Asset, 
   Operation,
-  Memo
+  Memo,
+  StrKey
 } from '@stellar/stellar-sdk';
 
 export interface StellarAsset {
@@ -138,10 +139,27 @@ class StellarHelper {
       let assetB: Asset;
 
       try {
-        assetA = codeA === 'XLM' ? Asset.native() : new Asset(codeA, issuerA!);
-        assetB = codeB === 'XLM' ? Asset.native() : new Asset(codeB, issuerB!);
+        if (codeA === 'XLM') {
+          assetA = Asset.native();
+        } else {
+          if (!issuerA || !StrKey.isValidEd25519PublicKey(issuerA)) {
+            console.warn(`Invalid issuer for ${codeA}: ${issuerA}`);
+            return null;
+          }
+          assetA = new Asset(codeA, issuerA);
+        }
+
+        if (codeB === 'XLM') {
+          assetB = Asset.native();
+        } else {
+          if (!issuerB || !StrKey.isValidEd25519PublicKey(issuerB)) {
+            console.warn(`Invalid issuer for ${codeB}: ${issuerB}`);
+            return null;
+          }
+          assetB = new Asset(codeB, issuerB);
+        }
       } catch (e) {
-        console.warn("Invalid asset parameters provided to getPoolPrice", e);
+        console.warn(`Asset creation failed for ${codeA}/${codeB}:`, e);
         return null;
       }
       

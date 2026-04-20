@@ -9,13 +9,19 @@ export default function MainDashboardPage() {
   const [isExecuting, setIsExecuting] = useState(false);
   const [xlmPrice, setXlmPrice] = useState<number | null>(null);
 
-  // Fetch real XLM price from a pool (XLM/USDC) for a more "real" dashboard
+  const hasFetched = React.useRef(false);
   useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+    
     async function fetchPrice() {
-      // XLM (Native) and USDC (G... on Testnet)
-      // On Testnet, USDC is often G... I'll just check if a pool exists or leave it null
-      const price = await stellar.getPoolPrice('XLM', 'USDC', undefined, 'GBBD67V63DU7T7WGXX3ZW3SJGR4FB46GEHACXDVOFY76NCO27LYA6AXY');
-      setXlmPrice(price);
+      try {
+        // XLM (Native) and USDC (Official Testnet Issuer)
+        const price = await stellar.getPoolPrice('XLM', 'USDC', undefined, 'GBBD67V63DU7T7WGXX3ZW3SJGR4FB46GEHACXDVOFY76NCO27LYA6AXY');
+        setXlmPrice(price);
+      } catch (e) {
+        console.error("Failed to fetch initial XLM price", e);
+      }
     }
     fetchPrice();
   }, []);

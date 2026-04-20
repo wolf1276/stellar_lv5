@@ -37,28 +37,29 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
           network: Networks.TESTNET,
           modules: defaultModules(),
         });
-        setKit(StellarWalletsKit);
+        setKit(() => StellarWalletsKit);
       }
     };
     initKit();
   }, []);
 
+  const fetchingRef = React.useRef(false);
+
   const refreshBalances = useCallback(async () => {
-    if (!address) return;
-    setLoading(true);
+    if (!address || fetchingRef.current) return;
+    fetchingRef.current = true;
     try {
       const data = await stellar.getBalance(address);
       setBalances(data);
     } catch (error) {
       console.error("Context balance fetch failed", error);
     } finally {
-      setLoading(false);
+      fetchingRef.current = false;
     }
   }, [address]);
 
   useEffect(() => {
     if (address) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       void refreshBalances();
     } else {
       setBalances({ xlm: "0.0000", assets: [] });
