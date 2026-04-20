@@ -49,7 +49,7 @@ class StellarHelper {
       const assets = account.balances
         .filter(b => b.asset_type !== 'native')
         .map(b => ({
-          code: (b as Horizon.BalanceLineAsset).asset_code || "Unknown",
+          code: (b as Horizon.HorizonApi.BalanceLineAsset).asset_code || "Unknown",
           balance: b.balance
         }));
       return { xlm, assets };
@@ -104,8 +104,7 @@ class StellarHelper {
   async submitXDR(signedXDR: string): Promise<TransactionResponse> {
     try {
       const tx = TransactionBuilder.fromXDR(signedXDR, Networks.TESTNET);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = await this.server.submitTransaction(tx as any);
+      const result = await this.server.submitTransaction(tx);
       return {
         success: true,
         hash: result.hash
@@ -114,9 +113,8 @@ class StellarHelper {
       console.error("Submission failed", error);
       let errorMessage = error instanceof Error ? error.message : String(error);
       if (error && typeof error === 'object' && 'response' in error) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const respData = (error.response as any)?.data;
-        const resultCodes = respData?.extras?.result_codes;
+        const resp = error.response as { data?: Horizon.HorizonApi.ErrorResponseData };
+        const resultCodes = resp.data && 'extras' in resp.data ? resp.data.extras?.result_codes : null;
         if (resultCodes) errorMessage = JSON.stringify(resultCodes);
       }
       return {
@@ -180,17 +178,33 @@ class StellarHelper {
         .limit(limit)
         .call();
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return payments.records.map((p: any) => ({
-        id: p.id,
-        hash: p.transaction_hash,
-        from: p.from,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        to: (p as any).to || (p as any).funder || "",
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        amount: (p as any).amount || "0",
-        createdAt: p.created_at,
-      }));
+      return payments.records.map((p) => {
+        let to = "";
+        let amount = "0";
+
+        if ("to" in p) {
+          to = (p as Horizon.ServerApi.PaymentOperationRecord).to;
+        } else if ("account" in p) {
+          to = (p as Horizon.ServerApi.CreateAccountOperationRecord).account;
+        } else if ("into" in p) {
+          to = (p as Horizon.ServerApi.AccountMergeOperationRecord).into;
+        }
+
+        if ("amount" in p) {
+          amount = (p as Horizon.ServerApi.PaymentOperationRecord).amount;
+        } else if ("starting_balance" in p) {
+          amount = (p as Horizon.ServerApi.CreateAccountOperationRecord).starting_balance;
+        }
+
+        return {
+          id: p.id,
+          hash: p.transaction_hash,
+          from: p.source_account,
+          to,
+          amount,
+          createdAt: p.created_at,
+        };
+      });
     } catch (error) {
       console.error("Failed to fetch recent transactions", error);
       return [];
