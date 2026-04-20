@@ -5,7 +5,6 @@ import { stellar } from '@/lib/stellar-helper';
 import { useStellar } from '@/context/StellarContext';
 
 export default function ProfitSimulatorPage() {
-  const { address } = useStellar();
   const [capital, setCapital] = useState(10000);
   const [leverage, setLeverage] = useState(1.0);
   const [xlmPrice, setXlmPrice] = useState<number | null>(null);
