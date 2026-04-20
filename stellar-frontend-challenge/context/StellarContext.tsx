@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { stellar, StellarAsset } from '@/lib/stellar-helper';
 
 interface StellarContextType {
@@ -9,6 +9,7 @@ interface StellarContextType {
   balances: { xlm: string; assets: StellarAsset[] };
   refreshBalances: () => Promise<void>;
   loading: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   kit: any;
 }
 
@@ -22,6 +23,7 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
     assets: [] 
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [kit, setKit] = useState<any>(null);
 
   // Initialize the kit with default modules (Freighter, etc.)
@@ -41,7 +43,7 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
     initKit();
   }, []);
 
-  const refreshBalances = async () => {
+  const refreshBalances = useCallback(async () => {
     if (!address) return;
     setLoading(true);
     try {
@@ -52,15 +54,15 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [address]);
 
   useEffect(() => {
     if (address) {
-      refreshBalances();
+      void refreshBalances();
     } else {
       setBalances({ xlm: "0.0000", assets: [] });
     }
-  }, [address]);
+  }, [address, refreshBalances]);
 
   return (
     <StellarContext.Provider value={{ 

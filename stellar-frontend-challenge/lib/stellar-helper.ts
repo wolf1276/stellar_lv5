@@ -4,8 +4,7 @@ import {
   Networks, 
   Asset, 
   Operation,
-  Memo,
-  Keypair
+  Memo
 } from '@stellar/stellar-sdk';
 
 export interface StellarAsset {
@@ -50,15 +49,19 @@ class StellarHelper {
       const assets = account.balances
         .filter(b => b.asset_type !== 'native')
         .map(b => ({
-          code: (b as any).asset_code || "Unknown",
+          code: (b as Horizon.BalanceLineAsset).asset_code || "Unknown",
           balance: b.balance
         }));
       return { xlm, assets };
-    } catch (error: any) {
-      if (error.response?.status === 404) {
-        throw new Error("Account not found on Testnet. Please fund it via Friendbot.");
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'response' in error) {
+        const resp = error.response as { status: number };
+        if (resp.status === 404) {
+          throw new Error("Account not found on Testnet. Please fund it via Friendbot.");
+        }
       }
-      throw new Error(`Failed to fetch balance: ${error.message}`);
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to fetch balance: ${message}`);
     }
   }
 
@@ -89,8 +92,9 @@ class StellarHelper {
       // 60-second timeout for security
       const tx = txBuilder.setTimeout(60).build();
       return tx.toXDR();
-    } catch (error: any) {
-      throw new Error(`Transaction building failed: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Transaction building failed: ${message}`);
     }
   }
 
@@ -100,15 +104,20 @@ class StellarHelper {
   async submitXDR(signedXDR: string): Promise<TransactionResponse> {
     try {
       const tx = TransactionBuilder.fromXDR(signedXDR, Networks.TESTNET);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await this.server.submitTransaction(tx as any);
       return {
         success: true,
         hash: result.hash
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Submission failed", error);
-      const resultCodes = error.response?.data?.extras?.result_codes;
-      const errorMessage = resultCodes ? JSON.stringify(resultCodes) : error.message;
+      let errorMessage = error instanceof Error ? error.message : String(error);
+      if (error && typeof error === 'object' && 'response' in error) {
+        const respData = (error.response as any)?.data;
+        const resultCodes = respData?.extras?.result_codes;
+        if (resultCodes) errorMessage = JSON.stringify(resultCodes);
+      }
       return {
         success: false,
         error: `Submission failed: ${errorMessage}`
@@ -170,12 +179,13 @@ class StellarHelper {
         .limit(limit)
         .call();
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return payments.records.map((p: any) => ({
         id: p.id,
         hash: p.transaction_hash,
         from: p.from,
-        to: p.to || p.funder || "",
-        amount: p.amount || "0",
+        to: (p as any).to || (p as any).funder || "",
+        amount: (p as any).amount || "0",
         createdAt: p.created_at,
       }));
     } catch (error) {
