@@ -1,8 +1,9 @@
 "use client";
 
-import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useStellar } from '@/context/StellarContext';
+import { calculateHealthFactor, getHealthStatus, Position } from '@/lib/liquidation';
 
 const TransactionHistory = dynamic(() => import('@/components/TransactionHistory'), {
   ssr: false,
@@ -10,8 +11,14 @@ const TransactionHistory = dynamic(() => import('@/components/TransactionHistory
 });
 
 export default function TransactionHistoryPage() {
-  const { address } = useStellar();
+  const { address, kit } = useStellar();
   const [refreshKey, setRefreshKey] = useState(0);
+  const [isLiquidating, setIsLiquidating] = useState(false);
+  const [position] = useState<Position>({
+    collateralAmount: 0,
+    debtAmount: 0,
+    liquidationThreshold: 0,
+  });
 
   return (
     <div className="p-8 md:p-12 lg:p-16 max-w-7xl mx-auto space-y-12">
