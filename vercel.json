@@ -1,5 +1,3 @@
 {
-  "buildCommand": "cd stellar-frontend-challenge && npm install && npm run build",
-  "outputDirectory": "stellar-frontend-challenge/.next",
   "framework": "nextjs"
 }

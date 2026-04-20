@@ -27,7 +27,6 @@ const PaymentForm = ({ onSuccess }: PaymentFormProps) => {
     setSuccess(null);
 
     try {
-      // Step 1: Build XDR
       const xdr = await stellar.buildPaymentXDR(
         address,
         recipient,
@@ -35,10 +34,8 @@ const PaymentForm = ({ onSuccess }: PaymentFormProps) => {
         memo
       );
 
-      // Step 2: Sign with Wallet Kit
       const { signedTxXdr } = await kit.signTransaction(xdr);
 
-      // Step 3: Submit to Horizon
       const result = await stellar.submitXDR(signedTxXdr);
 
       if (result.success) {

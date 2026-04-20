@@ -23,7 +23,6 @@ export default function RiskDashboardPage() {
     if (!address || !kit) return alert("Please connect wallet first");
     setIsLiquidating(true);
     try {
-      // Step 1: Build XDR for liquidation proof
       const xdr = await stellar.buildPaymentXDR(
         address,
         address,
@@ -31,10 +30,8 @@ export default function RiskDashboardPage() {
         "liq-proof"
       );
 
-      // Step 2: Sign with Wallet Kit
       const { signedTxXdr } = await kit.signTransaction(xdr);
 
-      // Step 3: Submit to Horizon
       const result = await stellar.submitXDR(signedTxXdr);
 
       if (result.success) {

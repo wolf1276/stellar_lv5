@@ -25,7 +25,6 @@ export default function ArbitrageExecutionPage() {
     if (!address || !kit) return alert("Please connect wallet first");
     setIsExecuting(true);
     try {
-      // Step 1: Build XDR
       const xdr = await stellar.buildPaymentXDR(
         address, 
         address, 
@@ -33,10 +32,8 @@ export default function ArbitrageExecutionPage() {
         "arb-proof"
       );
 
-      // Step 2: Sign with Wallet Kit
       const { signedTxXdr } = await kit.signTransaction(xdr);
 
-      // Step 3: Submit to Horizon
       const result = await stellar.submitXDR(signedTxXdr);
 
       if (result.success) {

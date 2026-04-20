@@ -16,7 +16,6 @@ export default function MainDashboardPage() {
     
     async function fetchPrice() {
       try {
-        // XLM (Native) and USDC (Official Testnet Issuer)
         const price = await stellar.getPoolPrice('XLM', 'USDC', undefined, 'GBBD67V63DU7T7WGXX3ZW3SJGR4FB46GEHACXDVOFY76NCO27LYA6AXY');
         setXlmPrice(price);
       } catch (e) {
@@ -30,7 +29,6 @@ export default function MainDashboardPage() {
     if (!address || !kit) return alert("Please connect your wallet first.");
     setIsExecuting(true);
     try {
-      // Building a real "Proof of Execution" transaction
       const xdr = await stellar.buildPaymentXDR(
         address, 
         address, 
