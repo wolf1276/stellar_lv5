@@ -6,11 +6,6 @@ import { stellar } from '@/lib/stellar-helper';
 import { calculateHealthFactor, getHealthStatus, Position } from '@/lib/liquidation';
 import dynamic from 'next/dynamic';
 
-const WalletConnection = dynamic(() => import('@/components/WalletConnection'), {
-  ssr: false,
-  loading: () => <div className="h-10 w-32 bg-white/5 rounded-md animate-pulse" />
-});
-
 export default function RiskDashboardPage() {
   const { address, kit } = useStellar();
   const [isLiquidating, setIsLiquidating] = useState(false);

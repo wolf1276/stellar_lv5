@@ -5,11 +5,6 @@ import React, { useState, useEffect } from 'react';
 import { stellar } from '@/lib/stellar-helper';
 import { useStellar } from '@/context/StellarContext';
 
-const WalletConnection = dynamic(() => import('@/components/WalletConnection'), {
-  ssr: false,
-  loading: () => <div className="h-10 w-32 bg-white/5 rounded-md animate-pulse" />
-});
-
 export default function MainDashboardPage() {
   const { address, balances, refreshBalances, kit } = useStellar();
   const [isExecuting, setIsExecuting] = useState(false);
@@ -47,9 +42,10 @@ export default function MainDashboardPage() {
       } else {
         alert(`Execution failed: ${result.error}`);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Dashboard execution error:", error);
-      alert(`Transaction failed: ${error.message || "User rejected or network error"}`);
+      const message = error instanceof Error ? error.message : String(error);
+      alert(`Transaction failed: ${message}`);
     } finally {
       setIsExecuting(false);
     }
