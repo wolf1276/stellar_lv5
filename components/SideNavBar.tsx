@@ -47,9 +47,12 @@ export const SideNavBar = () => {
       </nav>
 
       <div className="px-6 mt-auto">
-        <button className="w-full py-3 px-4 rounded-md bg-gradient-to-r from-primary to-primary-container text-on-primary font-semibold text-sm hover:opacity-90 transition-opacity mb-8 shadow-lg">
+        <Link 
+          href="/simulator"
+          className="w-full py-3 px-4 rounded-md bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold text-center block text-sm hover:opacity-90 transition-opacity mb-8 shadow-lg"
+        >
           New Simulation
-        </button>
+        </Link>
         
         <div className="space-y-4">
           <Link href="/docs" className="flex items-center px-4 text-gray-500 hover:text-white transition-colors text-[10px] font-bold uppercase tracking-widest">
