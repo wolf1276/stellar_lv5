@@ -19,9 +19,10 @@ export default function WalletConnection() {
       if (result && result.address) {
         setAddress(result.address);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Connection failed:", err);
-      if (err.message?.includes("User rejected")) {
+      const message = err instanceof Error ? err.message : String(err);
+      if (message.includes("User rejected")) {
         setError("Connection rejected");
       } else {
         setError("Failed to connect");

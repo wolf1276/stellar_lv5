@@ -1,6 +1,5 @@
 "use client";
 
-import dynamic from 'next/dynamic';
 import React, { useState, useEffect } from 'react';
 import { stellar } from '@/lib/stellar-helper';
 import { useStellar } from '@/context/StellarContext';

@@ -51,9 +51,10 @@ const PaymentForm = ({ onSuccess }: PaymentFormProps) => {
       } else {
         setError(`Transaction failed: ${result.error}`);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Payment error:", err);
-      setError(err.message || "Failed to send payment. User may have rejected transaction.");
+      const message = err instanceof Error ? err.message : String(err);
+      setError(message || "Failed to send payment. User may have rejected transaction.");
     } finally {
       setLoading(false);
     }

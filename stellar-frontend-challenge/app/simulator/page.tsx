@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { stellar } from '@/lib/stellar-helper';
-import { useStellar } from '@/context/StellarContext';
 
 export default function ProfitSimulatorPage() {
   const [capital, setCapital] = useState(10000);
