@@ -1,7 +1,7 @@
 # 🌌 SALA: Stellar Arbitrage & Liquidation Assistant
 > **Elevating Capital Efficiency on Stellar with AI-Driven Atomic Arbitrage and Automated Liquidations.**
 
-![SALA Hero](https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&q=80&w=1200)
+![SALA Dashboard Preview](./public/preview.png)
 
 ## 🎯 Project Overview
 SALA (Stellar Arbitrage & Liquidation Assistant) is a high-frequency decentralized finance (DeFi) engine built to stabilize the Stellar ecosystem while generating yield for users. By combining a low-latency Python monitoring bot with atomic Soroban smart contracts, SALA identifies and executes profitable arbitrage pathways and keeps lending protocols healthy through automated liquidations.
@@ -62,9 +62,8 @@ python main.py
 ```
 
 ## 🎥 Links & Demo
-*   **Live Demo**: [https://sala-stellar.vercel.app](https://sala-stellar.vercel.app)
-*   **Demo Video**: [YouTube Link](https://youtube.com)
-*   **Contract Address (Testnet)**: `CD...` (Deployed)
+*   **Live App**: [https://stellar-lv5.vercel.app](https://stellar-lv5.vercel.app)
+*   **Contract Address (Testnet)**: `CB...` (Verified & Deployed)
 
 ## 👥 User Feedback
 SALA was tested by 5 active Stellar Testnet users. 
