@@ -4,10 +4,8 @@ import React, { useState } from 'react';
 import { useStellar } from '@/context/StellarContext';
 import { stellar } from '@/lib/stellar-helper';
 import { calculateHealthFactor, getHealthStatus, Position } from '@/lib/liquidation';
-import dynamic from 'next/dynamic';
 
-export default function ProfitSimulatorPage() {
-  const [capital, setCapital] = useState(10000);
+export default function RiskDashboardPage() {
   const { address, kit } = useStellar();
   const [isLiquidating, setIsLiquidating] = useState(false);
   const [position] = useState<Position>({
