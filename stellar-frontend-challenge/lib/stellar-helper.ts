@@ -1,0 +1,197 @@
+import { 
+  Horizon, 
+  TransactionBuilder, 
+  Networks, 
+  Asset, 
+  Operation,
+  Memo,
+  Keypair
+} from '@stellar/stellar-sdk';
+
+export interface StellarAsset {
+  code: string;
+  balance: string;
+}
+
+export interface StellarTransaction {
+  id: string;
+  hash: string;
+  from: string;
+  to: string;
+  amount: string;
+  createdAt: string;
+  memo?: string;
+}
+
+export type TransactionResponse = {
+  success: true;
+  hash: string;
+} | {
+  success: false;
+  error: string;
+};
+
+class StellarHelper {
+  private server: Horizon.Server;
+  private horizonUrl: string = "https://horizon-testnet.stellar.org";
+
+  constructor() {
+    this.server = new Horizon.Server(this.horizonUrl);
+  }
+
+  /**
+   * Fetches real account data from Horizon Testnet.
+   * Throws if account doesn't exist or network failure.
+   */
+  async getBalance(address: string): Promise<{ xlm: string; assets: StellarAsset[] }> {
+    try {
+      const account = await this.server.loadAccount(address);
+      const xlm = account.balances.find(b => b.asset_type === 'native')?.balance || "0";
+      const assets = account.balances
+        .filter(b => b.asset_type !== 'native')
+        .map(b => ({
+          code: (b as any).asset_code || "Unknown",
+          balance: b.balance
+        }));
+      return { xlm, assets };
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        throw new Error("Account not found on Testnet. Please fund it via Friendbot.");
+      }
+      throw new Error(`Failed to fetch balance: ${error.message}`);
+    }
+  }
+
+  /**
+   * Builds an unsigned transaction XDR for a payment.
+   */
+  async buildPaymentXDR(from: string, to: string, amount: string, memo?: string): Promise<string> {
+    try {
+      const account = await this.server.loadAccount(from);
+      const baseFee = await this.server.fetchBaseFee();
+      
+      const txBuilder = new TransactionBuilder(account, {
+        fee: String(baseFee),
+        networkPassphrase: Networks.TESTNET,
+      })
+        .addOperation(
+          Operation.payment({
+            destination: to,
+            asset: Asset.native(),
+            amount: amount,
+          })
+        );
+
+      if (memo) {
+        txBuilder.addMemo(Memo.text(memo));
+      }
+
+      // 60-second timeout for security
+      const tx = txBuilder.setTimeout(60).build();
+      return tx.toXDR();
+    } catch (error: any) {
+      throw new Error(`Transaction building failed: ${error.message}`);
+    }
+  }
+
+  /**
+   * Submits a signed transaction XDR to the network.
+   */
+  async submitXDR(signedXDR: string): Promise<TransactionResponse> {
+    try {
+      const tx = TransactionBuilder.fromXDR(signedXDR, Networks.TESTNET);
+      const result = await this.server.submitTransaction(tx as any);
+      return {
+        success: true,
+        hash: result.hash
+      };
+    } catch (error: any) {
+      console.error("Submission failed", error);
+      const resultCodes = error.response?.data?.extras?.result_codes;
+      const errorMessage = resultCodes ? JSON.stringify(resultCodes) : error.message;
+      return {
+        success: false,
+        error: `Submission failed: ${errorMessage}`
+      };
+    }
+  }
+
+  /**
+   * Fetches real-time price from a liquidity pool.
+   * Returns null if no pool exists (no simulation).
+   */
+  async getPoolPrice(codeA: string, codeB: string, issuerA?: string, issuerB?: string): Promise<number | null> {
+    try {
+      // Validate assets
+      if (codeA !== 'XLM' && !issuerA) return null;
+      if (codeB !== 'XLM' && !issuerB) return null;
+
+      let assetA: Asset;
+      let assetB: Asset;
+
+      try {
+        assetA = codeA === 'XLM' ? Asset.native() : new Asset(codeA, issuerA!);
+        assetB = codeB === 'XLM' ? Asset.native() : new Asset(codeB, issuerB!);
+      } catch (e) {
+        console.warn("Invalid asset parameters provided to getPoolPrice", e);
+        return null;
+      }
+      
+      const pools = await this.server
+        .liquidityPools()
+        .forAssets(assetA, assetB)
+        .call();
+
+      if (pools.records.length > 0) {
+        const pool = pools.records[0];
+        const reserveA = parseFloat(pool.reserves.find(r => r.asset.split(':')[0] === (codeA === 'XLM' ? 'native' : codeA))?.amount || "0");
+        const reserveB = parseFloat(pool.reserves.find(r => r.asset.split(':')[0] === (codeB === 'XLM' ? 'native' : codeB))?.amount || "0");
+        
+        if (reserveA > 0 && reserveB > 0) {
+          return reserveB / reserveA;
+        }
+      }
+      return null;
+    } catch (error) {
+      console.error("Failed to fetch pool price", error);
+      return null;
+    }
+  }
+
+  /**
+   * Fetches recent payment operations for an account.
+   */
+  async getRecentTransactions(address: string, limit: number = 10): Promise<StellarTransaction[]> {
+    try {
+      const payments = await this.server
+        .payments()
+        .forAccount(address)
+        .order("desc")
+        .limit(limit)
+        .call();
+
+      return payments.records.map((p: any) => ({
+        id: p.id,
+        hash: p.transaction_hash,
+        from: p.from,
+        to: p.to || p.funder || "",
+        amount: p.amount || "0",
+        createdAt: p.created_at,
+      }));
+    } catch (error) {
+      console.error("Failed to fetch recent transactions", error);
+      return [];
+    }
+  }
+
+  getExplorerLink(hash: string): string {
+    return `https://stellar.expert/explorer/testnet/tx/${hash}`;
+  }
+
+  formatAddress(address: string, start = 4, end = 4): string {
+    if (!address) return "";
+    return `${address.substring(0, start)}...${address.substring(address.length - end)}`;
+  }
+}
+
+export const stellar = new StellarHelper();
