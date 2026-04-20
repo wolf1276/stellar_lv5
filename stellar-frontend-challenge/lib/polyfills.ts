@@ -1,5 +1,10 @@
 import { Buffer } from 'buffer';
 
+interface WindowWithBuffer extends Window {
+  Buffer?: typeof Buffer;
+}
+
 if (typeof window !== 'undefined') {
-  (window as any).Buffer = (window as any).Buffer || Buffer;
+  const win = window as unknown as WindowWithBuffer;
+  win.Buffer = win.Buffer || Buffer;
 }

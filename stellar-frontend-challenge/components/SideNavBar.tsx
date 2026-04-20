@@ -52,14 +52,14 @@ export const SideNavBar = () => {
         </button>
         
         <div className="space-y-4">
-          <a href="#" className="flex items-center px-4 text-gray-500 hover:text-white transition-colors text-[10px] font-bold uppercase tracking-widest">
+          <Link href="/docs" className="flex items-center px-4 text-gray-500 hover:text-white transition-colors text-[10px] font-bold uppercase tracking-widest">
             <span className="material-symbols-outlined mr-3 text-sm">description</span>
             Docs
-          </a>
-          <a href="#" className="flex items-center px-4 text-gray-500 hover:text-white transition-colors text-[10px] font-bold uppercase tracking-widest">
+          </Link>
+          <Link href="/support" className="flex items-center px-4 text-gray-500 hover:text-white transition-colors text-[10px] font-bold uppercase tracking-widest">
             <span className="material-symbols-outlined mr-3 text-sm">help</span>
             Support
-          </a>
+          </Link>
         </div>
       </div>
     </aside>

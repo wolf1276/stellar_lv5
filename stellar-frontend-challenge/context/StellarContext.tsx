@@ -8,7 +8,6 @@ interface StellarContextType {
   setAddress: (addr: string | null) => void;
   balances: { xlm: string; assets: StellarAsset[] };
   refreshBalances: () => Promise<void>;
-  loading: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   kit: any;
 }
@@ -17,7 +16,6 @@ const StellarContext = createContext<StellarContextType | undefined>(undefined);
 
 export function StellarProvider({ children }: { children: React.ReactNode }) {
   const [address, setAddress] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
   const [balances, setBalances] = useState<{ xlm: string; assets: StellarAsset[] }>({ 
     xlm: "0.0000", 
     assets: [] 
@@ -59,11 +57,14 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
   }, [address]);
 
   useEffect(() => {
-    if (address) {
-      void refreshBalances();
-    } else {
-      setBalances({ xlm: "0.0000", assets: [] });
-    }
+    const syncBalances = async () => {
+      if (address) {
+        await refreshBalances();
+      } else {
+        setBalances({ xlm: "0.0000", assets: [] });
+      }
+    };
+    syncBalances();
   }, [address, refreshBalances]);
 
   return (
@@ -72,7 +73,6 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
       setAddress, 
       balances, 
       refreshBalances, 
-      loading,
       kit
     }}>
       {children}
