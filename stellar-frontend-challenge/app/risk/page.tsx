@@ -1,7 +1,6 @@
 "use client";
 
-import Link from 'next/link';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useStellar } from '@/context/StellarContext';
 import { stellar } from '@/lib/stellar-helper';
 import { calculateHealthFactor, getHealthStatus, Position } from '@/lib/liquidation';
@@ -49,12 +48,13 @@ export default function RiskDashboardPage() {
       } else {
         alert(`Execution failed: ${result.error}`);
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error("Liquidation error:", e);
-      if (e.message?.includes("User rejected")) {
+      const message = e instanceof Error ? e.message : String(e);
+      if (message.includes("User rejected")) {
         alert("Transaction was rejected by the user.");
       } else {
-        alert(`Execution error: ${e.message}`);
+        alert(`Execution error: ${message}`);
       }
     } finally {
       setIsLiquidating(false);

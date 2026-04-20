@@ -58,6 +58,7 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (address) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       void refreshBalances();
     } else {
       setBalances({ xlm: "0.0000", assets: [] });

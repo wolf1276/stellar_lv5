@@ -25,6 +25,7 @@ const BalanceDisplay = ({ address }: BalanceDisplayProps) => {
   }, [address]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchBalances();
   }, [fetchBalances]);
 

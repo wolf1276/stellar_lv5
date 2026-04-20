@@ -114,6 +114,7 @@ class StellarHelper {
       console.error("Submission failed", error);
       let errorMessage = error instanceof Error ? error.message : String(error);
       if (error && typeof error === 'object' && 'response' in error) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const respData = (error.response as any)?.data;
         const resultCodes = respData?.extras?.result_codes;
         if (resultCodes) errorMessage = JSON.stringify(resultCodes);
@@ -184,7 +185,9 @@ class StellarHelper {
         id: p.id,
         hash: p.transaction_hash,
         from: p.from,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         to: (p as any).to || (p as any).funder || "",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         amount: (p as any).amount || "0",
         createdAt: p.created_at,
       }));

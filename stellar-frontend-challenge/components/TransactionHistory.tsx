@@ -27,6 +27,7 @@ const TransactionHistory = ({ address, refreshKey }: TransactionHistoryProps) =>
   }, [address]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchTransactions();
   }, [fetchTransactions, refreshKey]);
 
