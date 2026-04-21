@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 
@@ -19,7 +20,7 @@ export const SideNavBar = () => {
     <aside className="hidden md:flex fixed left-0 top-0 h-screen w-64 z-40 bg-binance-dark flex-col pt-8 pb-8 border-r border-white/5">
       <div className="px-8 mb-10 flex items-center gap-3">
         <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-          <img src="/logo.png" alt="SALA Logo" className="w-12 h-12 object-contain" />
+          <Image src="/logo.png" alt="SALA Logo" width={48} height={48} className="object-contain" />
           <div className="hidden lg:block">
             <h1 className="font-bold text-white text-xl tracking-tighter leading-none">SALA</h1>
             <p className="text-[10px] text-slate font-bold uppercase tracking-[0.2em] mt-1">Stellar Assistant</p>
