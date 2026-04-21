@@ -48,9 +48,42 @@ SALA provides a **unified execution layer**:
 
 ---
 
-## 🏗 Architecture
+## 🏗 Detailed Architecture
 
-SALA utilizes a **Hybrid Execution Model**, bridging off-chain computation with on-chain settlement.
+SALA is architected as a **Hybrid High-Frequency DeFi Engine**, splitting responsibilities between a low-latency off-chain environment and a secure, atomic on-chain execution layer.
+
+### 1. Off-Chain Intelligence (Python Engine)
+The core logic resides in a modular Python engine designed for sub-millisecond opportunity detection:
+
+- **📡 Data Layer**: Connects to Horizon and Soroban RPC nodes via asynchronous streaming to maintain a real-time shadow-state of liquidity pool reserves.
+- **🧠 Arbitrage Engine**: Implements a modified **Bellman-Ford Algorithm** to identify triangular arbitrage cycles (e.g., XLM → USDC → BTC → XLM) across the network graph.
+- **🛡️ Risk Management**: Calculates slippage, network fees, and transaction success probability before committing capital.
+- **⚙️ Execution Controller**: Generates base-64 encoded XDR transactions and manages autonomous submission or routes them to the dashboard for manual user approval.
+
+### 2. On-Chain Atomicity (Soroban Smart Contracts)
+Written in Rust, our Soroban contracts provide the final safety guarantee for all operations:
+
+- **⚡ Atomic Swaps**: Executes multi-hop swaps in a single transaction. If any leg of the trade fails or the final balance is lower than the initial investment, the entire transaction **reverts**, protecting the user's principal.
+- **🔗 Vault Integration**: Interacts directly with Stellar's native Liquidity Pools (CAP-38) and Soroban-based AMMs through a unified interface.
+- **🚨 Liquidation Handler**: Validates health factors of overcollateralized positions and executes atomic debt-repayment/collateral-claim cycles.
+
+### 3. Institutional Frontend (Next.js Dashboard)
+A professional-grade interface for monitoring and manual intervention:
+
+- **📊 Live Monitoring**: Real-time visualization of market depth, pool reserves, and detected opportunities.
+- **👛 Wallet Orchestration**: Utilizes the **Stellar Wallets Kit** to provide a seamless signing experience for Freighter, Albedo, and xBull wallets.
+- **📜 Transparency Layer**: Decodes complex XDR strings into human-readable trade paths, allowing users to verify operations before signing.
+
+---
+
+### 🔄 The Arbitrage Lifecycle
+
+1. **Detection**: Bot identifies a price discrepancy between Pool A and Pool B.
+2. **Simulation**: The engine simulates the trade against the current ledger state to calculate expected profit.
+3. **Execution**:
+    - **Auto-Mode**: Bot submits signed XDR directly to the network.
+    - **Manual-Mode**: Dashboard alerts the user and requests a wallet signature.
+4. **Verification**: The Soroban contract performs a final balance check. If `Output < Input + Fee`, it triggers a panic to revert the state.
 
 ```mermaid
 graph TD
