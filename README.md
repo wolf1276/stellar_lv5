@@ -139,6 +139,7 @@ python main.py
 
 - 🌐 **Live App**: [https://stellar-lv5.vercel.app](https://stellar-lv5.vercel.app)
 - 📝 **Contract Address (Testnet)**: `CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA` *(Successfully Deployed)*
+- 📊 **Excel Analysis**: [Google Spreadsheet](https://docs.google.com/spreadsheets/d/1tkFq_iBcwL_g24gOBOhqT5FLaT1Oz2m9srdpmzjJTOk/edit?usp=sharing)
 
 ---
 
