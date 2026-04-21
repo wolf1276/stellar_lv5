@@ -13,12 +13,10 @@ export const TopNavBar = () => {
     <header className="fixed top-0 left-0 right-0 md:left-64 z-50 bg-white/95 backdrop-blur-md flex justify-between items-center px-4 md:px-8 h-16 shadow-binance border-b border-border-light">
       <div className="flex items-center">
         {/* Mobile Logo */}
-        <div className="md:hidden flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary rounded-sm flex items-center justify-center">
-            <span className="material-symbols-outlined text-ink text-xl font-bold">account_balance_wallet</span>
-          </div>
+        <Link href="/" className="flex items-center gap-2 md:hidden">
+          <img src="/logo.png" alt="SALA Logo" className="w-8 h-8 object-contain" />
           <span className="font-bold text-ink tracking-tight text-xl">SALA</span>
-        </div>
+        </Link>
         
         {/* Search Bar - Binance Style */}
         <div className="hidden md:flex items-center bg-background border border-border-light rounded-md px-4 py-1.5 focus-within:border-ink transition-all">

@@ -18,13 +18,13 @@ export const SideNavBar = () => {
   return (
     <aside className="hidden md:flex fixed left-0 top-0 h-screen w-64 z-40 bg-binance-dark flex-col pt-8 pb-8 border-r border-white/5">
       <div className="px-8 mb-10 flex items-center gap-3">
-        <div className="w-10 h-10 bg-primary rounded-sm flex items-center justify-center shadow-lg">
-          <span className="material-symbols-outlined text-ink text-2xl font-bold">account_balance_wallet</span>
-        </div>
-        <div>
-          <h1 className="font-bold text-white text-xl tracking-tighter leading-none">SALA</h1>
-          <p className="text-[10px] text-slate font-bold uppercase tracking-[0.2em] mt-1">Stellar Assistant</p>
-        </div>
+        <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+          <img src="/logo.png" alt="SALA Logo" className="w-12 h-12 object-contain" />
+          <div className="hidden lg:block">
+            <h1 className="font-bold text-white text-xl tracking-tighter leading-none">SALA</h1>
+            <p className="text-[10px] text-slate font-bold uppercase tracking-[0.2em] mt-1">Stellar Assistant</p>
+          </div>
+        </Link>
       </div>
 
       <nav className="flex-1 px-4 space-y-1">
