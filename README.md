@@ -1,76 +1,155 @@
-# 🌌 SALA: Stellar Arbitrage & Liquidation Assistant
-> **Elevating Capital Efficiency on Stellar with AI-Driven Atomic Arbitrage and Automated Liquidations.**
+<div align="center">
+  <img src="./public/preview.png" alt="SALA Dashboard Preview" width="100%" />
+  
+  <br />
+  <br />
 
-![SALA Dashboard Preview](./public/preview.png)
+  # 🌌 SALA: Stellar Arbitrage & Liquidation Assistant
+  
+  **Elevating Capital Efficiency on Stellar with AI-Driven Atomic Arbitrage and Automated Liquidations.**
+
+  [![Stellar](https://img.shields.io/badge/Stellar-Ecosystem-black?style=flat-square&logo=stellar)](https://stellar.org)
+  [![Soroban](https://img.shields.io/badge/Smart_Contracts-Soroban-f7a000?style=flat-square)](https://soroban.stellar.org)
+  [![Next.js](https://img.shields.io/badge/Frontend-Next.js_14-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+  [![Python](https://img.shields.io/badge/Engine-Python_3.11-blue?style=flat-square&logo=python)](https://python.org)
+  [![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
+</div>
+
+<hr />
 
 ## 🎯 Project Overview
-SALA (Stellar Arbitrage & Liquidation Assistant) is a high-frequency decentralized finance (DeFi) engine built to stabilize the Stellar ecosystem while generating yield for users. By combining a low-latency Python monitoring bot with atomic Soroban smart contracts, SALA identifies and executes profitable arbitrage pathways and keeps lending protocols healthy through automated liquidations.
+
+**SALA** is a high-frequency decentralized finance (DeFi) engine designed to stabilize the Stellar ecosystem while generating yield for its operators. 
+
+By unifying a low-latency Python monitoring bot with atomic Soroban smart contracts and an institutional-grade frontend, SALA identifies and executes profitable arbitrage pathways across automated market makers (AMMs) and keeps emerging lending protocols healthy through automated liquidations.
 
 ### 🚩 The Problem
-DeFi on Stellar is growing, but fragmented liquidity across AMMs often leads to price discrepancies. Furthermore, as lending protocols emerge, the need for reliable, decentralized liquidators is critical to prevent system-wide bad debt. Manual arbitrage is impossible due to speed, and simple bots lack the atomic safety of Soroban.
+As DeFi on Stellar grows, fragmented liquidity across various AMM pools inevitably leads to price discrepancies. Furthermore, as decentralized lending protocols emerge on Soroban, the need for reliable, fast liquidators becomes critical to prevent system-wide bad debt. Manual arbitrage is impossible due to network speeds, and standard trading bots lack the **atomic safety** required to guarantee profitability.
 
 ### 💡 The Solution
 SALA provides a **unified execution layer**:
-1. **Off-Chain Intelligence**: A Python engine that scans the network in sub-milliseconds for triangular and cross-pool opportunities.
-2. **On-Chain Atomicity**: Soroban smart contracts that execute complex multi-hop swaps or liquidations in a single, revert-protected transaction.
-3. **Institutional UI**: A premium Dashboard for users to monitor "hot" routes, track history, and execute "One-Click" manual arbitrage.
+1. **Off-Chain Intelligence**: A Python engine scans the network in sub-milliseconds for triangular and cross-pool opportunities using graph algorithms.
+2. **On-Chain Atomicity**: Soroban smart contracts execute complex multi-hop swaps or liquidations in a single, revert-protected transaction. If the final output isn't profitable, the transaction reverts.
+3. **Institutional UI**: A premium Dashboard for users to monitor market depth, track execution history, and manually execute "One-Click" arbitrage.
+
+---
 
 ## ✨ Key Features
-*   **Atomic Arbitrage**: Multi-hop swaps (e.g., XLM -> USDC -> AQUA -> XLM) that only execute if profitable.
-*   **AI-Optimized Routing**: Heuristics that prioritize pools based on volatility and depth.
-*   **Liquidation Module**: Real-time health factor monitoring for lending positions.
-*   **Institutional Dashboard**: Real-time asset valuation, interactive route analysis, and deep ledger history.
-*   **Multi-Wallet Support**: Seamless integration with Freighter, Albedo, and more via Stellar Wallets Kit v2.
 
-## 🛠 Tech Stack
-*   **Smart Contracts**: Soroban (Rust)
-*   **Backend Bot**: Python (Stellar SDK, Asyncio)
-*   **Frontend**: Next.js 16+, TypeScript, Tailwind CSS
-*   **Blockchain Logic**: `@stellar/stellar-sdk`, `@creit.tech/stellar-wallets-kit`
-*   **Infrastructure**: Horizon API, Soroban RPC
+- ⚡️ **Atomic Arbitrage**: Multi-hop swaps (e.g., `XLM -> USDC -> AQUA -> XLM`) that guarantee profitability or revert the transaction.
+- 🧠 **AI-Optimized Routing**: Intelligent heuristics that prioritize liquidity pools based on historical volatility and order book depth.
+- 🛡️ **Liquidation Module**: Real-time health factor monitoring for overcollateralized lending positions, with one-click liquidation triggers.
+- 📊 **Institutional Dashboard**: Real-time asset valuation, interactive route analysis, and deep ledger history visualization.
+- 👛 **Seamless Wallet Integration**: Native support for Freighter, Albedo, and xBull via Stellar Wallets Kit.
+
+---
 
 ## 🏗 Architecture
-SALA utilizes a **Hybrid Execution Model**:
-1.  **Monitor**: Python bot polls Horizon/RPC for reserve changes.
-2.  **Analyze**: triangular cycles are detected using optimized Bellman-Ford variants.
-3.  **Execute**:
-    *   **Automated**: Bot signs and submits transactions via a private key.
-    *   **Manual**: Frontend builds XDR, user signs via Wallet Kit.
-4.  **Settle**: Soroban contract verifies profit threshold; if met, swaps execute; otherwise, the transaction reverts to save capital.
 
-## 🚀 Setup Instructions
+SALA utilizes a **Hybrid Execution Model**, bridging off-chain computation with on-chain settlement.
 
-### Frontend
+```mermaid
+graph TD
+    subgraph Off-Chain Environment
+        A[Python Bot] -->|Polls| B(Horizon API / Soroban RPC)
+        B -->|Returns State| A
+        A -->|Calculates Paths| C{Bellman-Ford Algorithm}
+        C -->|Profitable Route Found| D[Generate XDR]
+    end
+
+    subgraph User Interface
+        E[Next.js Dashboard] -->|Reads| B
+        D -.->|Manual Execution| E
+        E -->|Wallet Sign| F[Stellar Wallets Kit]
+    end
+
+    subgraph On-Chain Environment (Stellar Testnet)
+        D -->|Auto Execution| G[Soroban Smart Contract]
+        F -->|Submit| G
+        G -->|Step 1: Swap| H((Pool 1))
+        G -->|Step 2: Swap| I((Pool 2))
+        G -->|Step 3: Swap| J((Pool 3))
+        J -->|Verify Balance| K{Is Output > Input?}
+        K -->|Yes| L[Commit State]
+        K -->|No| M[Revert Transaction]
+    end
+```
+
+---
+
+## 🛠 Tech Stack
+
+| Domain | Technologies |
+| :--- | :--- |
+| **Smart Contracts** | Rust, Soroban SDK v21 |
+| **Backend Engine** | Python 3.11, `stellar-sdk`, `asyncio`, `rich` |
+| **Frontend App** | Next.js 14 (App Router), TypeScript, Tailwind CSS, Framer Motion |
+| **Blockchain Int.** | `@stellar/stellar-sdk`, `@creit.tech/stellar-wallets-kit` |
+
+---
+
+## 🚀 Quick Start Guide
+
+### 1. Frontend Dashboard
+The frontend is built with Next.js and lives in the root directory.
+
 ```bash
-cd stellar-frontend-challenge
-npm install
+# Install dependencies (legacy-peer-deps required for certain wallet adapters)
+npm install --legacy-peer-deps
+
+# Start the development server
 npm run dev
 ```
+*The app will be available at `http://localhost:3000`.*
 
-### Smart Contract
+### 2. Smart Contracts (Soroban)
+The contracts require the Rust toolchain and Soroban CLI.
+
 ```bash
 cd contracts/arb_executor
+
+# Build the WebAssembly binary
 soroban contract build
-soroban contract deploy --network testnet --source alice
+
+# Deploy to testnet
+soroban contract deploy \
+  --wasm target/wasm32-unknown-unknown/release/arb_executor.wasm \
+  --source alice \
+  --network testnet
 ```
 
-### Bot
+### 3. Python Bot
+The backend engine requires Python 3.9+.
+
 ```bash
 cd bot
+
+# Create virtual environment and install requirements
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
+
+# Run the monitoring engine
 python main.py
 ```
 
-## 🎥 Links & Demo
-*   **Live App**: [https://stellar-lv5.vercel.app](https://stellar-lv5.vercel.app)
-*   **Contract Address (Testnet)**: `CB...` (Verified & Deployed)
+---
 
-## 👥 User Feedback
-SALA was tested by 5 active Stellar Testnet users. 
-*   "The UI feels like a Bloomberg terminal for Stellar."
-*   "Atomic execution saved me from 3 failed trades that would have cost fees elsewhere."
+## 🎥 Links & Deployment
+
+- 🌐 **Live App**: [https://stellar-lv5.vercel.app](https://stellar-lv5.vercel.app)
+- 📝 **Contract Address (Testnet)**: `CB...` *(Successfully Deployed)*
+
+---
 
 ## 🔮 Future Roadmap
-*   **Dynamic Gas Bidding**: Auto-adjusting fees during high-congestion periods.
-*   **More Protocols**: Integration with upcoming Soroban-native lending markets.
-*   **Advanced AI**: Using ML to predict liquidity shifts before they happen.
+
+- [ ] **Dynamic Gas Bidding**: Auto-adjusting network fees during high-congestion periods to ensure inclusion.
+- [ ] **Protocol Expansion**: Direct integration with upcoming Soroban-native lending markets (e.g., Blend).
+- [ ] **Predictive ML**: Utilizing machine learning models to predict liquidity shifts and pre-position capital.
+
+---
+
+<div align="center">
+  <p>Built for the Stellar Ecosystem • 2026</p>
+</div>
