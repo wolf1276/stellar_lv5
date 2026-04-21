@@ -138,7 +138,7 @@ python main.py
 ## 🎥 Links & Deployment
 
 - 🌐 **Live App**: [https://stellar-lv5.vercel.app](https://stellar-lv5.vercel.app)
-- 📝 **Contract Address (Testnet)**: `CB...` *(Successfully Deployed)*
+- 📝 **Contract Address (Testnet)**: `CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA` *(Successfully Deployed)*
 
 ---
 
