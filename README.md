@@ -63,7 +63,7 @@ graph TD
         E -->|Wallet Sign| F[Stellar Wallets Kit]
     end
 
-    subgraph On-Chain Environment (Stellar Testnet)
+    subgraph "On-Chain Environment (Stellar Testnet)"
         D -->|Auto Execution| G[Soroban Smart Contract]
         F -->|Submit| G
         G -->|Step 1: Swap| H((Pool 1))
