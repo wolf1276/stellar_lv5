@@ -22,6 +22,14 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "SALA | Stellar Arbitrage & Liquidation Assistant",
   description: "Advanced dashboard for Stellar network arbitrage and liquidation monitoring.",
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
+  manifest: '/site.webmanifest',
 };
 
 import { StellarProvider } from '@/context/StellarContext';
