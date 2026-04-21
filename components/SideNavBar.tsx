@@ -16,29 +16,35 @@ export const SideNavBar = () => {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden md:flex fixed left-0 top-0 h-screen w-64 z-40 bg-[#1B1B1B] flex-col pt-24 pb-8">
-      <div className="px-6 mb-12">
-        <h1 className="font-lora text-lg text-white mb-1">Stellar Arbitrage</h1>
-        <p className="text-xs text-gray-500 font-medium tracking-wide">Digital Treasury</p>
+    <aside className="hidden md:flex fixed left-0 top-0 h-screen w-64 z-40 bg-binance-dark flex-col pt-8 pb-8 border-r border-white/5">
+      <div className="px-8 mb-10 flex items-center gap-3">
+        <div className="w-10 h-10 bg-primary rounded-sm flex items-center justify-center shadow-lg">
+          <span className="material-symbols-outlined text-ink text-2xl font-bold">account_balance_wallet</span>
+        </div>
+        <div>
+          <h1 className="font-bold text-white text-xl tracking-tighter leading-none">SALA</h1>
+          <p className="text-[10px] text-slate font-bold uppercase tracking-[0.2em] mt-1">Stellar Assistant</p>
+        </div>
       </div>
 
-      <nav className="flex-1 px-2 space-y-2">
+      <nav className="flex-1 px-4 space-y-1">
         {NAV_ITEMS.map((item) => {
           const isActive = pathname === item.href;
           return (
             <Link 
               key={item.href}
               href={item.href}
-              className={`flex items-center px-6 py-3 rounded-r-full mr-4 transition-all duration-200 group ${
+              className={`flex items-center px-4 py-3 rounded-md transition-all duration-200 group ${
                 isActive 
-                  ? 'bg-[#2A2A2A] text-[#FDDA24]' 
-                  : 'text-gray-500 hover:text-white hover:bg-[#2A2A2A]/50'
+                  ? 'bg-dark-card text-primary' 
+                  : 'text-slate hover:text-white hover:bg-dark-card/50'
               }`}
             >
-              <span className={`material-symbols-outlined mr-4 group-hover:translate-x-1 duration-300 ${isActive ? 'fill' : ''}`}>
+              <div className={`w-1 h-4 rounded-full mr-3 transition-all ${isActive ? 'bg-primary' : 'bg-transparent'}`} />
+              <span className={`material-symbols-outlined mr-3 text-xl ${isActive ? 'fill' : ''}`}>
                 {item.icon}
               </span>
-              <span className="font-['Inter'] font-semibold tracking-wide uppercase text-[10px]">
+              <span className="font-medium text-sm">
                 {item.label}
               </span>
             </Link>
@@ -49,22 +55,23 @@ export const SideNavBar = () => {
       <div className="px-6 mt-auto">
         <Link 
           href="/simulator"
-          className="w-full py-3 px-4 rounded-md bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold text-center block text-sm hover:opacity-90 transition-opacity mb-8 shadow-lg"
+          className="w-full py-3 px-4 rounded-md bg-primary text-ink font-bold text-center block text-sm hover:brightness-110 transition-all mb-8 shadow-pill"
         >
           New Simulation
         </Link>
         
-        <div className="space-y-4">
-          <Link href="/docs" className="flex items-center px-4 text-gray-500 hover:text-white transition-colors text-[10px] font-bold uppercase tracking-widest">
-            <span className="material-symbols-outlined mr-3 text-sm">description</span>
-            Docs
+        <div className="space-y-4 px-2">
+          <Link href="/docs" className="flex items-center text-slate hover:text-white transition-colors text-xs font-medium">
+            <span className="material-symbols-outlined mr-3 text-lg">description</span>
+            Documentation
           </Link>
-          <Link href="/support" className="flex items-center px-4 text-gray-500 hover:text-white transition-colors text-[10px] font-bold uppercase tracking-widest">
-            <span className="material-symbols-outlined mr-3 text-sm">help</span>
-            Support
+          <Link href="/support" className="flex items-center text-slate hover:text-white transition-colors text-xs font-medium">
+            <span className="material-symbols-outlined mr-3 text-lg">help</span>
+            Support Center
           </Link>
         </div>
       </div>
     </aside>
   );
 };
+

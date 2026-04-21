@@ -13,12 +13,11 @@ export default function WalletConnection() {
     setLoading(true);
     setError(null);
     try {
-      // Reverting to authModal as openModal was reported as non-existent
-      const result = await kit.authModal();
-      
-      if (result && result.address) {
-        setAddress(result.address);
-      }
+      await kit.openModal({
+        onSelection: (pubKey: string) => {
+          setAddress(pubKey);
+        }
+      });
     } catch (err: unknown) {
       console.error("Connection failed:", err);
       const message = err instanceof Error ? err.message : String(err);
@@ -39,21 +38,19 @@ export default function WalletConnection() {
 
   if (address) {
     return (
-      <div className="flex items-center gap-4">
-        <div className="flex flex-col items-end">
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-full">
-            <div className="w-2 h-2 bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
-            <span className="text-[10px] font-mono text-white/60 tracking-wider">
-              {address.substring(0, 6)}...{address.substring(address.length - 4)}
-            </span>
-          </div>
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 px-4 py-2 bg-background border border-border-light rounded-full shadow-binance">
+          <div className="w-1.5 h-1.5 bg-crypto-green rounded-full" />
+          <span className="text-xs font-semibold text-ink">
+            {address.substring(0, 4)}...{address.substring(address.length - 4)}
+          </span>
         </div>
         <button 
           onClick={handleDisconnect}
-          className="p-2 bg-white/5 hover:bg-red-500/10 border border-white/10 hover:border-red-500/30 rounded-full transition-all group"
+          className="p-2 text-slate hover:text-crypto-red transition-all"
           title="Disconnect Wallet"
         >
-          <span className="material-symbols-outlined text-lg text-white/40 group-hover:text-red-400 transition-colors">
+          <span className="material-symbols-outlined text-[20px]">
             logout
           </span>
         </button>
@@ -62,20 +59,21 @@ export default function WalletConnection() {
   }
 
   return (
-    <div className="flex flex-col items-end gap-2">
+    <div className="relative">
       <button 
         onClick={handleConnect} 
         disabled={loading}
-        className="bg-[#FDDA24] text-black px-5 py-2.5 rounded-md text-sm font-bold tracking-tight hover:opacity-90 transition-all active:scale-95 flex items-center gap-2 shadow-lg disabled:opacity-50"
+        className="btn-primary btn-pill flex items-center gap-2 active:scale-[0.98] disabled:opacity-50"
       >
-        <span className="material-symbols-outlined text-lg">account_balance_wallet</span>
-        {loading ? "Connecting..." : "Connect Wallet"}
+        <span className="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+        <span className="text-sm font-bold uppercase tracking-wider">{loading ? "Connecting..." : "Connect"}</span>
       </button>
       {error && (
-        <span className="text-[10px] text-red-400 font-medium animate-pulse">
+        <span className="absolute -bottom-4 right-0 text-[9px] text-crypto-red font-bold uppercase tracking-tighter">
           {error}
         </span>
       )}
     </div>
   );
 }
+

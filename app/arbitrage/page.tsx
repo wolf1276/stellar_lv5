@@ -56,103 +56,129 @@ export default function ArbitrageExecutionPage() {
   };
 
   return (
-    <div className="px-6 md:px-12 pb-24 max-w-5xl mx-auto w-full">
-      <header className="mb-12 flex justify-between items-end">
-        <div>
-          <h2 className="font-lora text-3xl md:text-4xl text-white mb-2">One-Click Arbitrage</h2>
-          <p className="text-sm text-gray-400 font-light">Execute optimized multi-hop pathways across the Stellar network.</p>
+    <div className="flex flex-col w-full min-h-screen bg-white">
+      {/* Header Section */}
+      <section className="px-8 md:px-12 py-12 border-b border-border-light">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-4xl font-bold text-ink mb-2 tracking-tight">One-Click Arbitrage</h1>
+          <p className="text-slate text-sm max-w-lg font-medium">Execute optimized multi-hop pathways across the Stellar network with institutional precision.</p>
         </div>
-      </header>
+      </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
-          <div className="bg-surface-container-low rounded-xl p-8 relative overflow-hidden ambient-shadow ghost-border">
-            <div className="absolute top-0 right-0 p-4">
-              <span className="bg-primary-container text-on-primary-container text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">Heuristic Score: {score}</span>
-            </div>
-            <h3 className="text-sm font-semibold text-on-surface-variant mb-6 uppercase tracking-widest">Identified Pathway</h3>
-            <div className="flex items-center justify-between mt-8 relative">
-              <div className="absolute left-0 top-1/2 w-full h-px bg-surface-variant -z-10"></div>
-              <div className="flex flex-col items-center bg-surface-container-low px-2">
-                <div className="w-12 h-12 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center mb-3">
-                  <span className="font-bold text-on-surface">XLM</span>
+      {/* Main Content Section */}
+      <section className="px-8 md:px-12 py-12 bg-snow flex-1">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            {/* Pathway Selection */}
+            <div className="lg:col-span-2 space-y-10">
+              <div className="card-binance p-8 bg-white">
+                <div className="flex justify-between items-center mb-10">
+                  <h3 className="text-xs font-bold text-slate uppercase tracking-widest">Identified Pathway</h3>
+                  <span className="bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded">Heuristic Score: {score}</span>
                 </div>
-                <span className="text-xs text-on-surface-variant">Start</span>
-              </div>
-              <span className="material-symbols-outlined text-secondary text-sm">arrow_forward</span>
-              <div className="flex flex-col items-center bg-surface-container-low px-2">
-                <div className="w-12 h-12 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center mb-3">
-                  <span className="font-bold text-on-surface">USDC</span>
-                </div>
-                <span className="text-xs text-secondary">+{spread.toFixed(2)}%</span>
-              </div>
-              <span className="material-symbols-outlined text-secondary text-sm">arrow_forward</span>
-              <div className="flex flex-col items-center bg-surface-container-low px-2">
-                <div className="w-12 h-12 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center mb-3">
-                  <span className="font-bold text-on-surface">yXLM</span>
-                </div>
-                <span className="text-xs text-secondary">+0.45%</span>
-              </div>
-              <span className="material-symbols-outlined text-secondary text-sm">arrow_forward</span>
-              <div className="flex flex-col items-center bg-surface-container-low px-2">
-                <div className="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(253,218,36,0.3)]">
-                  <span className="font-bold text-on-primary-container">XLM</span>
-                </div>
-                <span className="text-xs text-primary-container font-semibold">End</span>
-              </div>
-            </div>
-          </div>
+                
+                <div className="flex items-center justify-between mt-8 relative">
+                  <div className="absolute left-0 top-[20px] w-full h-px border-t border-dashed border-border-light -z-0"></div>
+                  
+                  <div className="flex flex-col items-center bg-white px-4 z-10">
+                    <div className="w-10 h-10 rounded-full bg-snow border border-border-light flex items-center justify-center mb-3">
+                      <span className="font-bold text-ink text-xs">XLM</span>
+                    </div>
+                    <span className="text-[10px] text-slate font-bold uppercase tracking-tighter">SOURCE</span>
+                  </div>
 
-          <div className="bg-surface-container-highest rounded-xl p-8 ghost-border">
-            <label className="block text-sm font-semibold text-on-surface-variant mb-4 uppercase tracking-widest">Execution Amount</label>
-            <div className="relative flex items-center border-b-2 border-outline-variant focus-within:border-primary-container transition-colors pb-2">
-              <input className="bg-transparent border-none text-4xl md:text-5xl font-light text-on-surface w-full focus:ring-0 p-0" placeholder="0.00" type="text" defaultValue="10,000.00"/>
-              <span className="text-xl font-medium text-on-surface-variant ml-4">XLM</span>
-            </div>
-            <div className="flex justify-between items-center mt-6">
-              <span className="text-xs text-on-surface-variant">Available Balance: {address ? `${balances.xlm} XLM` : "0.00 XLM"}</span>
-            </div>
-          </div>
-        </div>
+                  <span className="material-symbols-outlined text-slate/30 text-sm z-10">arrow_forward</span>
 
-        <div className="space-y-6">
-          <div className="bg-surface-container-low rounded-xl p-6 ghost-border h-full flex flex-col justify-between">
-            <div>
-              <h3 className="text-sm font-semibold text-on-surface-variant mb-6 uppercase tracking-widest">Trade Summary</h3>
-              <div className="space-y-4 mb-8">
-                <div className="flex justify-between items-end">
-                  <span className="text-sm text-on-surface-variant">Estimated Profit</span>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-secondary">~{(10000 * spread / 100).toFixed(2)} XLM</div>
-                    <div className="text-xs text-on-surface-variant mt-1">≈ ${((10000 * spread / 100) * 0.12).toFixed(2)} USD</div>
+                  <div className="flex flex-col items-center bg-white px-4 z-10">
+                    <div className="w-10 h-10 rounded-full bg-snow border border-border-light flex items-center justify-center mb-3">
+                      <span className="font-bold text-ink text-xs">USDC</span>
+                    </div>
+                    <span className="text-[10px] text-crypto-green font-bold">+{spread.toFixed(2)}%</span>
+                  </div>
+
+                  <span className="material-symbols-outlined text-slate/30 text-sm z-10">arrow_forward</span>
+
+                  <div className="flex flex-col items-center bg-white px-4 z-10">
+                    <div className="w-10 h-10 rounded-full bg-snow border border-border-light flex items-center justify-center mb-3">
+                      <span className="font-bold text-ink text-xs">yXLM</span>
+                    </div>
+                    <span className="text-[10px] text-crypto-green font-bold">+0.45%</span>
+                  </div>
+
+                  <span className="material-symbols-outlined text-slate/30 text-sm z-10">arrow_forward</span>
+
+                  <div className="flex flex-col items-center bg-white px-4 z-10">
+                    <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center mb-3 shadow-[0_4px_10px_rgba(240,185,11,0.2)]">
+                      <span className="font-bold text-ink text-xs">XLM</span>
+                    </div>
+                    <span className="text-[10px] text-primary font-bold uppercase tracking-tighter">SETTLE</span>
                   </div>
                 </div>
-                <div className="w-full h-px bg-surface-variant"></div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-on-surface-variant">Gross Spread</span>
-                  <span className="text-sm font-medium text-on-surface">{spread.toFixed(2)}%</span>
+              </div>
+
+              <div className="card-binance p-8 bg-white">
+                <label className="block text-xs font-bold text-slate mb-6 uppercase tracking-widest">Execution Parameters</label>
+                <div className="relative flex items-center border-b border-border-light focus-within:border-primary transition-colors pb-4">
+                  <input className="bg-transparent border-none text-5xl font-bold text-ink w-full focus:ring-0 p-0 placeholder:text-slate/20" placeholder="0.00" type="text" defaultValue="10,000.00"/>
+                  <span className="text-xl font-bold text-slate ml-4">XLM</span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-on-surface-variant">Network Fees</span>
-                  <span className="text-sm font-medium text-on-surface">0.00004 XLM</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-on-surface-variant">Slippage Tolerance</span>
-                  <span className="text-sm font-medium text-on-surface">0.10%</span>
+                <div className="flex justify-between items-center mt-6">
+                  <span className="text-xs text-slate font-medium">Available Assets: <span className="text-ink font-bold">{address ? `${parseFloat(balances.xlm).toLocaleString()} XLM` : "0.00 XLM"}</span></span>
+                  <button className="text-primary text-[10px] font-bold uppercase tracking-widest hover:underline">Max Amount</button>
                 </div>
               </div>
             </div>
-            <button 
-              onClick={handleExecuteArb}
-              disabled={isExecuting}
-              className="w-full py-4 rounded-lg bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold text-lg hover:opacity-90 transition-opacity shadow-[0_0_20px_rgba(253,218,36,0.15)] flex items-center justify-center space-x-2 disabled:opacity-50"
-            >
-              <span className="material-symbols-outlined">{isExecuting ? 'sync' : 'bolt'}</span>
-              <span>{isExecuting ? 'Processing...' : 'Execute Arbitrage'}</span>
-            </button>
+
+            {/* Execution Sidebar */}
+            <div className="space-y-6">
+              <div className="card-binance p-8 bg-white flex flex-col h-full">
+                <h3 className="text-xs font-bold text-slate uppercase tracking-widest mb-10 pb-2 border-b border-border-light">Execution Summary</h3>
+                
+                <div className="space-y-6 flex-grow">
+                  <div className="flex justify-between items-start">
+                    <span className="text-sm text-slate font-medium">Estimated Net Profit</span>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-crypto-green">~{(10000 * spread / 100).toFixed(2)} XLM</div>
+                      <div className="text-xs text-slate font-medium mt-1">≈ ${((10000 * spread / 100) * 0.12).toFixed(2)} USD</div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-slate font-medium">Gross Spread</span>
+                      <span className="text-ink font-bold">{spread.toFixed(2)}%</span>
+                    </div>
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-slate font-medium">Network Fee (XLM)</span>
+                      <span className="text-ink font-bold">0.00004</span>
+                    </div>
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-slate font-medium">Slippage Tolerance</span>
+                      <span className="text-ink font-bold">0.10%</span>
+                    </div>
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-slate font-medium">Settlement Speed</span>
+                      <span className="text-crypto-green font-bold">~5s</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-12">
+                  <button 
+                    onClick={handleExecuteArb}
+                    disabled={isExecuting}
+                    className="btn-primary w-full py-4 text-base font-bold flex items-center justify-center gap-3 disabled:grayscale disabled:opacity-50"
+                  >
+                    <span className="material-symbols-outlined text-lg">{isExecuting ? 'sync' : 'bolt'}</span>
+                    <span>{isExecuting ? 'BROADCASTING...' : 'EXECUTE ARBITRAGE'}</span>
+                  </button>
+                  <p className="text-center text-[10px] text-slate mt-4 font-medium italic">Transactions are finalized instantly on-chain.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

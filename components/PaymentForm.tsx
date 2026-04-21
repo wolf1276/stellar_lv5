@@ -59,36 +59,41 @@ const PaymentForm = ({ onSuccess }: PaymentFormProps) => {
 
   if (!address) {
     return (
-      <div className="bg-[#1E1E1E] border border-white/5 rounded-xl p-8 text-center flex flex-col items-center justify-center min-h-[400px]">
-        <span className="material-symbols-outlined text-white/10 text-6xl mb-6">lock</span>
-        <h3 className="text-white font-bold text-lg mb-2 tracking-tight">Treasury Locked</h3>
-        <p className="text-white/40 text-sm max-w-[240px] leading-relaxed italic">Please connect your Freighter wallet to authorize outgoing transfers.</p>
+      <div className="card-binance p-8 text-center flex flex-col items-center justify-center min-h-[440px] bg-white">
+        <div className="w-20 h-20 rounded-full bg-snow flex items-center justify-center mb-8">
+          <span className="material-symbols-outlined text-slate text-4xl">lock</span>
+        </div>
+        <h3 className="text-ink font-bold text-xl mb-3">Vault Connection Required</h3>
+        <p className="text-slate text-sm max-w-[280px] leading-relaxed">Please connect your Stellar wallet via the navigation bar to authorize outbound asset transfers.</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#1E1E1E] border border-white/5 rounded-xl p-8 shadow-2xl h-full flex flex-col">
-      <h3 className="text-white/40 text-[10px] font-bold tracking-[0.2em] uppercase mb-8">Outbound Transfer</h3>
+    <div className="card-binance p-8 shadow-2xl h-full flex flex-col bg-white">
+      <div className="flex items-center justify-between mb-8 pb-4 border-b border-border-light">
+        <h3 className="text-ink font-bold text-lg">Send Assets</h3>
+        <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded uppercase tracking-wider">Fast Transfer</span>
+      </div>
       
-      <form onSubmit={handleSubmit} className="space-y-8 flex-grow flex flex-col">
-        <div className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-6 flex-grow flex flex-col">
+        <div className="space-y-5">
           <div>
-            <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest block mb-3">Destination Address</label>
+            <label className="text-xs font-bold text-ink mb-2 block">Recipient Address</label>
             <input 
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white font-mono text-xs focus:ring-1 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all"
-              placeholder="G..." 
+              className="w-full bg-snow border border-border-light rounded-md px-4 py-3 text-ink font-mono text-xs focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-slate/40"
+              placeholder="Ex: GD3... (G-Address)" 
               value={recipient}
               onChange={(e) => setRecipient(e.target.value)}
               required
             />
           </div>
           
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest block mb-3">Amount (XLM)</label>
+              <label className="text-xs font-bold text-ink mb-2 block">Amount (XLM)</label>
               <input 
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white font-mono text-sm focus:ring-1 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all"
+                className="w-full bg-snow border border-border-light rounded-md px-4 py-3 text-ink font-bold text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-slate/40"
                 type="number" 
                 step="0.0001" 
                 placeholder="0.00" 
@@ -98,10 +103,10 @@ const PaymentForm = ({ onSuccess }: PaymentFormProps) => {
               />
             </div>
             <div>
-              <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest block mb-3">Memo (Optional)</label>
+              <label className="text-xs font-bold text-ink mb-2 block">Memo (Optional)</label>
               <input 
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white text-xs focus:ring-1 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all"
-                placeholder="Reference" 
+                className="w-full bg-snow border border-border-light rounded-md px-4 py-3 text-ink text-xs focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-slate/40"
+                placeholder="Text/ID" 
                 value={memo}
                 onChange={(e) => setMemo(e.target.value)}
               />
@@ -109,21 +114,21 @@ const PaymentForm = ({ onSuccess }: PaymentFormProps) => {
           </div>
         </div>
 
-        <div className="bg-primary/5 p-4 rounded-lg border border-primary/10 flex gap-4 mt-auto">
+        <div className="bg-snow p-4 rounded-md border border-border-light flex gap-4 mt-auto">
           <span className="material-symbols-outlined text-primary text-xl shrink-0">info</span>
-          <p className="text-white/40 text-[10px] leading-relaxed font-medium">
-            Authorized transfers are immutable. Ensure the recipient address is verified before confirming. Network fee: 0.00001 XLM.
+          <p className="text-slate text-[11px] leading-relaxed font-medium">
+            Authorized transfers are immutable on the Stellar ledger. Always double-check addresses. Network fee: 0.00001 XLM.
           </p>
         </div>
 
         <AnimatePresence>
           {error && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] p-3 rounded-lg font-bold uppercase tracking-widest">
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="bg-crypto-red/5 border border-crypto-red/10 text-crypto-red text-xs p-4 rounded-md font-bold">
               {error}
             </motion.div>
           )}
           {success && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="bg-green-500/10 border border-green-500/20 text-green-500 text-[10px] p-3 rounded-lg font-bold uppercase tracking-widest">
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="bg-crypto-green/5 border border-crypto-green/10 text-crypto-green text-xs p-4 rounded-md font-bold">
               {success}
             </motion.div>
           )}
@@ -131,18 +136,18 @@ const PaymentForm = ({ onSuccess }: PaymentFormProps) => {
 
         <button 
           type="submit" 
-          className="w-full bg-primary text-black py-4 rounded-lg font-bold text-xs uppercase tracking-widest hover:opacity-90 transition-all disabled:opacity-30 shadow-lg mt-4 flex items-center justify-center gap-3"
+          className="btn-primary w-full py-4 flex items-center justify-center gap-3 disabled:opacity-50 disabled:grayscale"
           disabled={loading || !recipient || !amount}
         >
           {loading ? (
             <>
-              <span className="material-symbols-outlined animate-spin text-sm">sync</span>
-              Authorizing...
+              <span className="material-symbols-outlined animate-spin text-lg">sync</span>
+              Authorizing Transaction...
             </>
           ) : (
             <>
-              <span className="material-symbols-outlined text-sm">send</span>
-              Confirm & Authorize
+              <span className="material-symbols-outlined text-lg">send</span>
+              Confirm Asset Transfer
             </>
           )}
         </button>
@@ -152,3 +157,4 @@ const PaymentForm = ({ onSuccess }: PaymentFormProps) => {
 };
 
 export default PaymentForm;
+

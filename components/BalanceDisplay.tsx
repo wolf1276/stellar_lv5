@@ -30,32 +30,34 @@ const BalanceDisplay = ({ address }: BalanceDisplayProps) => {
   }, [fetchBalances]);
 
   return (
-    <div className="bg-[#1E1E1E] border border-white/5 rounded-xl p-8 relative overflow-hidden group shadow-2xl">
-      {/* Decorative background element */}
-      <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-all duration-500" />
+    <div className="card-binance p-8 flex flex-col relative overflow-hidden bg-white">
+      {/* Subtle brand mark */}
+      <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
       
       <div className="flex justify-between items-start mb-10">
         <div>
-          <p className="text-white/30 text-[10px] font-bold uppercase tracking-[0.2em]">Available Treasury</p>
-          <h2 className="text-5xl font-black mt-2 flex items-baseline gap-3">
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={balances?.xlm}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="text-white tracking-tighter"
-              >
-                {loading ? "---" : parseFloat(balances?.xlm || "0").toLocaleString()}
-              </motion.span>
-            </AnimatePresence>
-            <span className="text-xl text-primary font-bold">XLM</span>
-          </h2>
+          <p className="text-slate text-[11px] font-bold uppercase tracking-widest">Estimated Balance</p>
+          <div className="mt-3 flex items-baseline gap-2">
+            <h2 className="text-5xl font-bold text-ink tracking-tight">
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={balances?.xlm}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                >
+                  {loading ? "0.00" : parseFloat(balances?.xlm || "0").toLocaleString()}
+                </motion.span>
+              </AnimatePresence>
+            </h2>
+            <span className="text-lg text-primary font-black">XLM</span>
+          </div>
+          <p className="text-slate text-xs mt-1 font-medium italic opacity-70">≈ ${(parseFloat(balances?.xlm || "0") * 0.12).toFixed(2)} USD</p>
         </div>
         <button 
           onClick={fetchBalances}
           disabled={loading}
-          className="p-3 bg-white/5 rounded-full hover:bg-white/10 transition-all active:rotate-180 duration-500 disabled:opacity-50 flex items-center justify-center border border-white/5"
+          className="w-10 h-10 rounded-full border border-border-light flex items-center justify-center text-slate hover:text-ink hover:border-ink transition-all disabled:opacity-30 bg-white"
         >
           <span className={`material-symbols-outlined text-xl ${loading ? 'animate-spin' : ''}`}>
             refresh
@@ -64,27 +66,45 @@ const BalanceDisplay = ({ address }: BalanceDisplayProps) => {
       </div>
 
       <div className="space-y-6">
-        <p className="text-white/20 text-[10px] font-bold uppercase tracking-widest border-b border-white/5 pb-2">Asset Allocation</p>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="flex items-center justify-between border-b border-border-light pb-2">
+          <p className="text-slate text-[11px] font-bold uppercase tracking-widest">Asset Allocation</p>
+          <span className="text-[10px] font-bold text-primary px-2 py-0.5 bg-primary/10 rounded">STELLAR NETWORK</span>
+        </div>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {balances?.assets.length === 0 ? (
-            <div className="col-span-2 py-4 text-white/20 text-xs italic font-medium">No secondary assets detected</div>
+            <div className="col-span-full py-6 text-center bg-snow rounded-lg border border-dashed border-border-light">
+              <p className="text-slate text-xs font-medium italic">No custom assets found in this vault</p>
+            </div>
           ) : (
             balances?.assets.map((asset) => (
-              <div key={asset.code} className="bg-white/[0.02] p-4 rounded-xl border border-white/5 hover:border-white/10 transition-all group/asset">
-                <p className="text-white/30 text-[9px] font-bold uppercase tracking-widest mb-1 group-hover/asset:text-primary transition-colors">{asset.code}</p>
-                <p className="text-white font-mono text-sm font-bold">{parseFloat(asset.balance).toFixed(2)}</p>
+              <div key={asset.code} className="bg-snow p-4 rounded-lg border border-border-light hover:border-primary/30 transition-all flex justify-between items-center group">
+                <div>
+                  <p className="text-ink font-bold text-sm tracking-tight">{asset.code}</p>
+                  <p className="text-[10px] text-slate font-medium uppercase tracking-tighter">Stellar Asset</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-ink font-bold text-sm">{parseFloat(asset.balance).toLocaleString()}</p>
+                  <p className="text-[9px] text-primary font-black opacity-0 group-hover:opacity-100 transition-opacity">TRADE</p>
+                </div>
               </div>
             ))
           )}
         </div>
       </div>
 
-      <div className="mt-8 flex items-center gap-2 text-primary/60 text-[10px] font-bold uppercase tracking-widest">
-        <span className="material-symbols-outlined text-sm">verified</span>
-        <span>Verified on Stellar Testnet</span>
+      <div className="mt-10 pt-6 border-t border-border-light flex items-center justify-between">
+        <div className="flex items-center gap-2 text-slate text-[10px] font-bold uppercase tracking-widest">
+          <span className="material-symbols-outlined text-sm text-crypto-green">verified</span>
+          <span>Stellar Testnet Sync</span>
+        </div>
+        <button className="text-primary text-[10px] font-bold uppercase tracking-widest hover:underline">
+          View Details
+        </button>
       </div>
     </div>
   );
 };
 
 export default BalanceDisplay;
+

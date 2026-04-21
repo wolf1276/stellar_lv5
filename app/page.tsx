@@ -47,7 +47,7 @@ export default function MainDashboardPage() {
       }
     } catch (error: unknown) {
       console.error("Dashboard execution error:", error);
-      const message = error instanceof Error ? error.message : String(error);
+      const message = error instanceof Error ? error.message : String(err);
       alert(`Transaction failed: ${message}`);
     } finally {
       setIsExecuting(false);
@@ -57,145 +57,208 @@ export default function MainDashboardPage() {
   const totalUsdValue = xlmPrice ? (parseFloat(balances.xlm) * xlmPrice).toFixed(2) : null;
 
   return (
-    <div className="px-6 md:px-12 pb-24 max-w-7xl mx-auto w-full">
-      <header className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
-        <div>
-          <h1 className="text-4xl md:text-5xl font-lora font-semibold text-white mb-2 tracking-tight">Treasury Overview</h1>
-          <p className="text-gray-400 text-sm tracking-wide font-['Inter']">Real-time asset valuation on Stellar Testnet.</p>
-        </div>
-      </header>
-
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Total Portfolio Value */}
-        <section className="lg:col-span-8 bg-[#1E1E1E] border border-white/5 rounded-xl p-8 relative overflow-hidden group shadow-2xl">
-          <div className="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
-          <div className="relative z-10 flex flex-col h-full justify-between">
-            <div>
-              <h2 className="text-white/40 text-[10px] font-bold tracking-[0.2em] uppercase mb-4">Total Portfolio Value</h2>
-              <div className="flex items-baseline gap-4">
-                <span className="text-5xl md:text-7xl font-extrabold text-white tracking-tighter">
-                  {address ? `${parseFloat(balances.xlm).toLocaleString()} XLM` : "Not Connected"}
+    <div className="flex flex-col w-full min-h-screen">
+      {/* SECTION 1: Portfolio Hero (Light) */}
+      <section className="bg-white px-6 md:px-12 py-12 border-b border-border-light">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+          <div className="flex-1">
+            <h1 className="text-slate text-[12px] font-bold uppercase tracking-[0.2em] mb-4">Total Portfolio Value</h1>
+            <div className="flex items-baseline gap-4">
+              <span className="text-4xl md:text-6xl font-bold text-ink tracking-tighter">
+                {address ? `${parseFloat(balances.xlm).toLocaleString()}` : "0.00"}
+                <span className="text-2xl md:text-3xl ml-3 text-slate">XLM</span>
+              </span>
+              {totalUsdValue && (
+                <span className="text-crypto-green text-xl font-semibold">
+                  ≈ ${totalUsdValue}
                 </span>
-                {totalUsdValue && (
-                  <span className="text-primary text-xl font-medium font-mono">
-                    ≈ ${totalUsdValue}
-                  </span>
+              )}
+            </div>
+            <div className="mt-8 flex items-center gap-6">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-crypto-green" />
+                <span className="text-slate text-xs font-medium">Stellar Testnet: Online</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-slate text-sm">shield</span>
+                <span className="text-slate text-xs font-medium">Secure Custody</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex gap-3">
+            <button className="btn-primary btn-pill shadow-pill active:scale-[0.98]">
+              Deposit Assets
+            </button>
+            <button className="px-8 py-2.5 border border-primary text-primary font-bold text-sm rounded-full hover:bg-primary/5 transition-all active:scale-[0.98]">
+              Transfer
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 2: Asset Breakdown (Light/Snow) */}
+      <section className="bg-snow px-6 md:px-12 py-16">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <div className="lg:col-span-8">
+            <h2 className="text-ink text-2xl font-bold mb-8">Asset Allocation</h2>
+            <div className="card-binance bg-white overflow-hidden shadow-sm">
+              <div className="grid grid-cols-12 px-6 py-4 border-b border-border-light text-slate text-[10px] font-bold uppercase tracking-widest bg-white">
+                <div className="col-span-4">Asset</div>
+                <div className="col-span-4 text-right">Balance</div>
+                <div className="col-span-4 text-right">Value (USD)</div>
+              </div>
+              
+              <div className="divide-y divide-border-light">
+                {/* XLM Row */}
+                <div className="grid grid-cols-12 px-6 py-5 hover:bg-snow transition-colors items-center bg-white">
+                  <div className="col-span-4 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-sm">
+                      <span className="material-symbols-outlined text-ink text-lg font-bold">star</span>
+                    </div>
+                    <span className="text-ink font-bold">XLM</span>
+                  </div>
+                  <div className="col-span-4 text-right text-ink font-bold">{address ? parseFloat(balances.xlm).toLocaleString() : "0.00"}</div>
+                  <div className="col-span-4 text-right text-crypto-green font-bold">${totalUsdValue || "0.00"}</div>
+                </div>
+
+                {/* Other Assets */}
+                {balances.assets.map((asset, idx) => (
+                  <div key={idx} className="grid grid-cols-12 px-6 py-5 hover:bg-snow transition-colors items-center bg-white">
+                    <div className="col-span-4 flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-snow border border-border-light flex items-center justify-center text-ink text-[10px] font-bold">
+                        {asset.code.substring(0, 2)}
+                      </div>
+                      <span className="text-ink font-bold">{asset.code}</span>
+                    </div>
+                    <div className="col-span-4 text-right text-ink font-bold">{parseFloat(asset.balance).toLocaleString()}</div>
+                    <div className="col-span-4 text-right text-slate font-medium">---</div>
+                  </div>
+                ))}
+
+                {!address && (
+                  <div className="py-12 text-center text-slate text-sm font-medium italic bg-white">
+                    Connect wallet to view your asset allocation
+                  </div>
                 )}
               </div>
             </div>
-            
-            <div className="mt-12 grid grid-cols-2 gap-8 pt-8 border-t border-white/5">
+          </div>
+
+          <div className="lg:col-span-4">
+            <h2 className="text-ink text-2xl font-bold mb-8">Performance</h2>
+            <div className="card-binance bg-white p-8 flex flex-col gap-6 shadow-sm">
               <div>
-                <p className="text-white/30 text-[10px] font-bold uppercase tracking-widest mb-1">Available Liquidity</p>
-                <p className="text-2xl font-mono text-white">
-                  {address ? `${balances.xlm} XLM` : "---"}
-                </p>
+                <p className="text-slate text-[10px] font-bold uppercase tracking-widest mb-1">24h Change</p>
+                <p className="text-3xl font-bold text-crypto-green">+4.12%</p>
               </div>
-              <div>
-                <p className="text-white/30 text-[10px] font-bold uppercase tracking-widest mb-1">Stellar Network</p>
-                <p className="text-2xl font-mono text-primary">TESTNET</p>
+              <div className="h-24 w-full bg-snow rounded-md border border-border-light flex items-end p-2 gap-1">
+                {[40, 60, 45, 80, 70, 90, 85, 100].map((h, i) => (
+                  <div key={i} className="flex-1 bg-crypto-green/30 rounded-t-sm" style={{ height: `${h}%` }} />
+                ))}
               </div>
+              <button className="w-full py-3 bg-snow hover:bg-border-light text-ink font-bold rounded-md transition-all text-xs uppercase tracking-widest">
+                View History
+              </button>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Asset Breakdown */}
-        <section className="lg:col-span-4 bg-[#1E1E1E] border border-white/5 rounded-xl p-8 shadow-2xl flex flex-col">
-          <h2 className="text-white/40 text-[10px] font-bold tracking-[0.2em] uppercase mb-8">Asset Breakdown</h2>
-          <div className="space-y-6">
-            <div className="flex items-center justify-between group p-3 hover:bg-white/5 rounded-lg transition-all">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
-                  <span className="material-symbols-outlined text-primary text-xl">star</span>
+      {/* SECTION 3: Opportunities (Light) */}
+      <section className="bg-white px-6 md:px-12 py-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+            <div>
+              <h2 className="text-ink text-3xl font-bold mb-2">Market Opportunities</h2>
+              <p className="text-slate text-sm">Active routes identified by the SALA Arbitrage Engine.</p>
+            </div>
+            <button className="text-primary font-bold text-sm hover:underline flex items-center gap-2">
+              View All Routes <span className="material-symbols-outlined text-sm">arrow_forward</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Opportunity Card 1 */}
+            <div className="card-binance p-8 flex flex-col">
+              <div className="flex justify-between items-start mb-8">
+                <div className="px-2 py-0.5 bg-crypto-green/10 text-crypto-green text-[9px] font-bold rounded border border-crypto-green/20">
+                  TRIANGULAR
                 </div>
-                <div>
-                  <p className="text-white font-bold text-sm">XLM</p>
-                  <p className="text-white/40 text-[10px] uppercase font-bold">Native</p>
+                <div className="flex flex-col items-end">
+                  <span className="text-ink font-bold text-xl">1.2%</span>
+                  <span className="text-slate text-[9px] font-bold uppercase">Estimated ROI</span>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-white font-mono text-sm">{address ? parseFloat(balances.xlm).toFixed(2) : "0.00"}</p>
-                <p className="text-primary text-[10px] font-bold">ACTIVE</p>
+
+              <div className="flex items-center justify-between mb-10 px-2">
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-10 h-10 rounded-full bg-slate/5 border border-slate/10 flex items-center justify-center font-bold text-xs">XLM</div>
+                </div>
+                <span className="material-symbols-outlined text-slate/30 text-sm">arrow_forward</span>
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-10 h-10 rounded-full bg-slate/5 border border-slate/10 flex items-center justify-center font-bold text-xs">USDC</div>
+                </div>
+                <span className="material-symbols-outlined text-slate/30 text-sm">arrow_forward</span>
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-10 h-10 rounded-full bg-slate/5 border border-slate/10 flex items-center justify-center font-bold text-xs">AQUA</div>
+                </div>
               </div>
+
+              <button 
+                onClick={handleExecuteArb}
+                disabled={isExecuting || !address}
+                className="w-full btn-primary active:scale-[0.98] disabled:opacity-30 flex items-center justify-center gap-2"
+              >
+                {isExecuting ? "Processing..." : "Execute Strategy"}
+              </button>
             </div>
 
-            {balances.assets.map((asset, index) => (
-              <div key={index} className="flex items-center justify-between group p-3 hover:bg-white/5 rounded-lg transition-all">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 text-white/40 text-[10px] font-bold">
-                    {asset.code.substring(0, 2)}
-                  </div>
-                  <div>
-                    <p className="text-white font-bold text-sm">{asset.code}</p>
-                    <p className="text-white/40 text-[10px] uppercase font-bold">Token</p>
-                  </div>
+            {/* Opportunity Card 2 (Placeholder) */}
+            <div className="card-binance p-8 flex flex-col opacity-60 grayscale-[0.5]">
+              <div className="flex justify-between items-start mb-8">
+                <div className="px-2 py-0.5 bg-slate/10 text-slate text-[9px] font-bold rounded border border-slate/20">
+                  CROSS-DEX
                 </div>
-                <div className="text-right">
-                  <p className="text-white font-mono text-sm">{parseFloat(asset.balance).toFixed(2)}</p>
-                  <p className="text-white/20 text-[10px] font-bold">TRUSTED</p>
+                <div className="flex flex-col items-end">
+                  <span className="text-ink font-bold text-xl">---</span>
+                  <span className="text-slate text-[9px] font-bold uppercase">Scanning...</span>
                 </div>
               </div>
-            ))}
-            
-            {!address && (
-              <div className="py-8 text-center">
-                <p className="text-white/20 text-xs font-medium italic">Connect wallet to view assets</p>
-              </div>
-            )}
-          </div>
-        </section>
 
-        {/* Active Arbitrage Routes */}
-        <section className="lg:col-span-12 mt-4">
-          <div className="flex justify-between items-end mb-6">
-            <h2 className="text-xl font-lora font-semibold text-white">Market Opportunities</h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-[#1E1E1E] border border-white/5 rounded-xl p-6 hover:border-primary/30 transition-all group">
-              <div className="flex justify-between items-start mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="px-2 py-1 bg-primary/10 rounded text-primary text-[10px] font-bold uppercase tracking-widest">
-                    Triangular Arb
-                  </div>
-                  <span className="text-white/20 text-[10px] font-mono">POOL: XLM/USDC</span>
-                </div>
-                <span className="text-primary font-mono text-lg font-bold">LIVE</span>
+              <div className="flex-1 flex items-center justify-center py-8">
+                <p className="text-slate text-sm italic font-medium">Monitoring Soroban Liquidity Pools</p>
               </div>
-              
-              <div className="flex items-center justify-between mb-8 px-4">
-                <span className="text-white font-bold">XLM</span>
-                <span className="material-symbols-outlined text-white/20">arrow_forward</span>
-                <span className="text-white font-bold">USDC</span>
-                <span className="material-symbols-outlined text-white/20">arrow_forward</span>
-                <span className="text-white font-bold">AQUA</span>
-              </div>
-              
-              <div className="flex gap-4">
-                <button 
-                  onClick={handleExecuteArb}
-                  disabled={isExecuting || !address}
-                  className="flex-1 bg-[#FDDA24] text-black py-3 rounded-md font-bold text-xs uppercase tracking-widest hover:opacity-90 transition-all disabled:opacity-30"
-                >
-                  {isExecuting ? "Executing..." : "Execute Route"}
-                </button>
-              </div>
+
+              <button disabled className="w-full py-3 bg-slate/10 text-slate font-bold rounded-md text-sm cursor-not-allowed">
+                Wait for Signal
+              </button>
             </div>
             
-            <div className="bg-[#1E1E1E] border border-white/5 rounded-xl p-6 opacity-50 cursor-not-allowed">
-              <div className="flex justify-between items-start mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="px-2 py-1 bg-white/5 rounded text-white/40 text-[10px] font-bold uppercase tracking-widest">
-                    Cross-DEX
-                  </div>
-                  <span className="text-white/20 text-[10px] font-mono">WAITING</span>
+            {/* Opportunity Card 3 (Placeholder) */}
+            <div className="card-binance p-8 flex flex-col opacity-60 grayscale-[0.5]">
+              <div className="flex justify-between items-start mb-8">
+                <div className="px-2 py-0.5 bg-slate/10 text-slate text-[9px] font-bold rounded border border-slate/20">
+                  LIQUIDATION
+                </div>
+                <div className="flex flex-col items-end">
+                  <span className="text-ink font-bold text-xl">---</span>
+                  <span className="text-slate text-[9px] font-bold uppercase">Scanning...</span>
                 </div>
               </div>
-              <p className="text-white/20 text-xs text-center py-4 italic">No profitable route detected</p>
+
+              <div className="flex-1 flex items-center justify-center py-8">
+                <p className="text-slate text-sm italic font-medium">Monitoring Lending Protocols</p>
+              </div>
+
+              <button disabled className="w-full py-3 bg-slate/10 text-slate font-bold rounded-md text-sm cursor-not-allowed">
+                No Undercollateralized Debt
+              </button>
             </div>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
   );
 }
+

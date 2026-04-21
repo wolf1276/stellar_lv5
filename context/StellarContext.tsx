@@ -24,18 +24,32 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [kit, setKit] = useState<any>(null);
 
-  // Initialize the kit with default modules (Freighter, etc.)
+  // Initialize the kit with an instance (required for v2.x)
   useEffect(() => {
     const initKit = async () => {
       if (typeof window !== 'undefined') {
-        const { StellarWalletsKit, Networks } = await import('@creit.tech/stellar-wallets-kit');
-        const { defaultModules } = await import('@creit.tech/stellar-wallets-kit/modules/utils');
-        
-        StellarWalletsKit.init({
-          network: Networks.TESTNET,
-          modules: defaultModules(),
-        });
-        setKit(() => StellarWalletsKit);
+        try {
+          const { 
+            StellarWalletsKit, 
+            WalletNetwork, 
+            FreighterModule, 
+            AlbedoModule, 
+            XBullModule 
+          } = await import('@creit.tech/stellar-wallets-kit');
+          
+          const newKit = new StellarWalletsKit({
+            network: WalletNetwork.TESTNET,
+            modules: [
+              new FreighterModule(),
+              new AlbedoModule(),
+              new XBullModule(),
+            ],
+          });
+          
+          setKit(newKit);
+        } catch (error) {
+          console.error("Failed to initialize StellarWalletsKit", error);
+        }
       }
     };
     initKit();

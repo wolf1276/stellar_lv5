@@ -6,7 +6,7 @@ import { useStellar } from '@/context/StellarContext';
 
 const TransactionHistory = dynamic(() => import('@/components/TransactionHistory'), {
   ssr: false,
-  loading: () => <div className="h-64 bg-white/5 rounded-xl animate-pulse" />
+  loading: () => <div className="h-64 bg-slate/5 rounded-xl animate-pulse" />
 });
 
 export default function TransactionHistoryPage() {
@@ -14,53 +14,71 @@ export default function TransactionHistoryPage() {
   const [refreshKey, setRefreshKey] = useState(0);
 
   return (
-    <div className="p-8 md:p-12 lg:p-16 max-w-7xl mx-auto space-y-12">
+    <div className="flex flex-col w-full min-h-screen bg-white">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <h2 className="text-4xl md:text-5xl font-lora font-semibold text-white mb-2">Ledger History</h2>
-          <p className="text-gray-400 text-sm max-w-lg">Comprehensive record of all on-chain executions and treasury movements.</p>
+      <section className="px-8 md:px-12 py-12 border-b border-border-light">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div>
+            <h1 className="text-4xl font-bold text-ink mb-2">Ledger History</h1>
+            <p className="text-slate text-sm max-w-lg">Comprehensive record of all on-chain executions and treasury movements on the Stellar Testnet.</p>
+          </div>
+          <button 
+            onClick={() => setRefreshKey(prev => prev + 1)}
+            className="flex items-center gap-2 px-6 py-2.5 border border-border-light rounded-full hover:bg-slate/5 transition-all text-xs font-bold uppercase tracking-widest text-ink"
+          >
+            <span className="material-symbols-outlined text-sm">refresh</span>
+            Refresh Data
+          </button>
         </div>
-        <button 
-          onClick={() => setRefreshKey(prev => prev + 1)}
-          className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-all text-xs font-bold uppercase tracking-widest text-white/80"
-        >
-          <span className="material-symbols-outlined text-sm">refresh</span>
-          Refresh Data
-        </button>
-      </div>
+      </section>
 
-      {/* Summary Metrics (Real data only) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-[#1E1E1E] border border-white/5 p-6 rounded-xl shadow-2xl">
-          <p className="text-[10px] text-white/40 mb-2 uppercase tracking-widest font-bold">Account Status</p>
-          <div className="flex items-center space-x-3">
-            <div className={`w-3 h-3 rounded-full ${address ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-red-500'}`} />
-            <span className="text-xl font-mono text-white">
-              {address ? 'CONNECTED' : 'DISCONNECTED'}
-            </span>
+      {/* Main Content */}
+      <section className="px-8 md:px-12 py-12 bg-snow">
+        <div className="max-w-7xl mx-auto space-y-10">
+          {/* Summary Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="card-binance p-8 flex flex-col justify-center">
+              <p className="text-[10px] text-slate mb-3 uppercase tracking-widest font-bold">Account Status</p>
+              <div className="flex items-center space-x-3">
+                <div className={`w-2 h-2 rounded-full ${address ? 'bg-crypto-green' : 'bg-crypto-red'}`} />
+                <span className="text-xl font-bold text-ink">
+                  {address ? 'CONNECTED' : 'DISCONNECTED'}
+                </span>
+              </div>
+            </div>
+            
+            <div className="card-binance p-8 flex flex-col justify-center">
+              <p className="text-[10px] text-slate mb-3 uppercase tracking-widest font-bold">Execution Network</p>
+              <div className="flex items-baseline space-x-2">
+                <span className="text-xl font-bold text-primary">STELLAR TESTNET</span>
+              </div>
+            </div>
           </div>
-        </div>
-        
-        <div className="bg-[#1E1E1E] border border-white/5 p-6 rounded-xl shadow-2xl">
-          <p className="text-[10px] text-white/40 mb-2 uppercase tracking-widest font-bold">Network</p>
-          <div className="flex items-baseline space-x-2">
-            <span className="text-xl font-mono text-primary font-bold">STELLAR TESTNET</span>
-          </div>
-        </div>
-      </div>
 
-      {/* Transaction List */}
-      <div className="bg-[#1E1E1E] border border-white/5 rounded-xl shadow-2xl overflow-hidden">
-        {address ? (
-          <TransactionHistory address={address} refreshKey={refreshKey} />
-        ) : (
-          <div className="p-20 text-center flex flex-col items-center gap-4">
-            <span className="material-symbols-outlined text-white/10 text-6xl">account_balance_wallet</span>
-            <p className="text-white/40 text-sm italic font-medium tracking-wide">Please connect your wallet to view transaction history.</p>
+          {/* Transaction List Container */}
+          <div className="card-binance overflow-hidden">
+            <div className="px-8 py-6 border-b border-border-light bg-white">
+              <h3 className="text-ink font-bold text-lg">Transaction Record</h3>
+            </div>
+            <div className="bg-white min-h-[400px]">
+              {address ? (
+                <TransactionHistory address={address} refreshKey={refreshKey} />
+              ) : (
+                <div className="py-32 text-center flex flex-col items-center gap-6">
+                  <div className="w-16 h-16 rounded-full bg-slate/5 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-slate/40 text-4xl">account_balance_wallet</span>
+                  </div>
+                  <div className="max-w-xs">
+                    <p className="text-ink font-bold text-lg mb-1">Wallet Not Connected</p>
+                    <p className="text-slate text-sm">Please connect your Stellar wallet to view your historical on-chain activity.</p>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        )}
-      </div>
+        </div>
+      </section>
     </div>
   );
 }
+
