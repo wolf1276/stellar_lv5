@@ -4,30 +4,34 @@
   <br />
   <br />
 
-  # 🌌 SALA: Stellar Arbitrage & Liquidation Assistant
-  
-  **Elevating Capital Efficiency on Stellar with AI-Driven Atomic Arbitrage and Automated Liquidations.**
+# 🌌 SALA: Stellar Arbitrage & Liquidation Assistant
 
-  [![Stellar](https://img.shields.io/badge/Stellar-Ecosystem-black?style=flat-square&logo=stellar)](https://stellar.org)
-  [![Soroban](https://img.shields.io/badge/Smart_Contracts-Soroban-f7a000?style=flat-square)](https://soroban.stellar.org)
-  [![Next.js](https://img.shields.io/badge/Frontend-Next.js_14-black?style=flat-square&logo=next.js)](https://nextjs.org/)
-  [![Python](https://img.shields.io/badge/Engine-Python_3.11-blue?style=flat-square&logo=python)](https://python.org)
-  [![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
+**Elevating Capital Efficiency on Stellar with AI-Driven Atomic Arbitrage and Automated Liquidations.**
+
+[![Stellar](https://img.shields.io/badge/Stellar-Ecosystem-black?style=flat-square&logo=stellar)](https://stellar.org)
+[![Soroban](https://img.shields.io/badge/Smart_Contracts-Soroban-f7a000?style=flat-square)](https://soroban.stellar.org)
+[![Next.js](https://img.shields.io/badge/Frontend-Next.js_14-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![Python](https://img.shields.io/badge/Engine-Python_3.11-blue?style=flat-square&logo=python)](https://python.org)
+[![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
+
 </div>
 
 <hr />
 
 ## 🎯 Project Overview
 
-**SALA** is a high-frequency decentralized finance (DeFi) engine designed to stabilize the Stellar ecosystem while generating yield for its operators. 
+**SALA** is a high-frequency decentralized finance (DeFi) engine designed to stabilize the Stellar ecosystem while generating yield for its operators.
 
 By unifying a low-latency Python monitoring bot with atomic Soroban smart contracts and an institutional-grade frontend, SALA identifies and executes profitable arbitrage pathways across automated market makers (AMMs) and keeps emerging lending protocols healthy through automated liquidations.
 
 ### 🚩 The Problem
+
 As DeFi on Stellar grows, fragmented liquidity across various AMM pools inevitably leads to price discrepancies. Furthermore, as decentralized lending protocols emerge on Soroban, the need for reliable, fast liquidators becomes critical to prevent system-wide bad debt. Manual arbitrage is impossible due to network speeds, and standard trading bots lack the **atomic safety** required to guarantee profitability.
 
 ### 💡 The Solution
+
 SALA provides a **unified execution layer**:
+
 1. **Off-Chain Intelligence**: A Python engine scans the network in sub-milliseconds for triangular and cross-pool opportunities using graph algorithms.
 2. **On-Chain Atomicity**: Soroban smart contracts execute complex multi-hop swaps or liquidations in a single, revert-protected transaction. If the final output isn't profitable, the transaction reverts.
 3. **Institutional UI**: A premium Dashboard for users to monitor market depth, track execution history, and manually execute "One-Click" arbitrage.
@@ -79,18 +83,19 @@ graph TD
 
 ## 🛠 Tech Stack
 
-| Domain | Technologies |
-| :--- | :--- |
-| **Smart Contracts** | Rust, Soroban SDK v21 |
-| **Backend Engine** | Python 3.11, `stellar-sdk`, `asyncio`, `rich` |
-| **Frontend App** | Next.js 14 (App Router), TypeScript, Tailwind CSS, Framer Motion |
-| **Blockchain Int.** | `@stellar/stellar-sdk`, `@creit.tech/stellar-wallets-kit` |
+| Domain              | Technologies                                                     |
+| :------------------ | :--------------------------------------------------------------- |
+| **Smart Contracts** | Rust, Soroban SDK v21                                            |
+| **Backend Engine**  | Python 3.11, `stellar-sdk`, `asyncio`, `rich`                    |
+| **Frontend App**    | Next.js 14 (App Router), TypeScript, Tailwind CSS, Framer Motion |
+| **Blockchain Int.** | `@stellar/stellar-sdk`, `@creit.tech/stellar-wallets-kit`        |
 
 ---
 
 ## 🚀 Quick Start Guide
 
 ### 1. Frontend Dashboard
+
 The frontend is built with Next.js and lives in the root directory.
 
 ```bash
@@ -100,9 +105,11 @@ npm install --legacy-peer-deps
 # Start the development server
 npm run dev
 ```
-*The app will be available at `http://localhost:3000`.*
+
+_The app will be available at `http://localhost:3000`._
 
 ### 2. Smart Contracts (Soroban)
+
 The contracts require the Rust toolchain and Soroban CLI.
 
 ```bash
@@ -119,6 +126,7 @@ soroban contract deploy \
 ```
 
 ### 3. Python Bot
+
 The backend engine requires Python 3.9+.
 
 ```bash
@@ -138,8 +146,8 @@ python main.py
 ## 🎥 Links & Deployment
 
 - 🌐 **Live App**: [https://stellar-lv5.vercel.app](https://stellar-lv5.vercel.app)
-- 📝 **Contract Address (Testnet)**: `CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA` *(Successfully Deployed)*
-- 📊 **Excel Analysis**: [Google Spreadsheet](https://docs.google.com/spreadsheets/d/1tkFq_iBcwL_g24gOBOhqT5FLaT1Oz2m9srdpmzjJTOk/edit?usp=sharing)
+- 📝 **Contract Address (Testnet)**: `CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA` _(Successfully Deployed)_
+- 📊 **Excel Sheet LINK**: [Google Spreadsheet](https://docs.google.com/spreadsheets/d/1tkFq_iBcwL_g24gOBOhqT5FLaT1Oz2m9srdpmzjJTOk/edit?usp=sharing)
 
 ---
 
