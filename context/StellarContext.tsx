@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { stellar, StellarAsset } from '@/lib/stellar-helper';
+import { Networks } from '@stellar/stellar-sdk';
 
 interface StellarContextType {
   address: string | null;
@@ -29,24 +30,20 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
     const initKit = async () => {
       if (typeof window !== 'undefined') {
         try {
-          const { 
-            StellarWalletsKit, 
-            WalletNetwork, 
-            FreighterModule, 
-            AlbedoModule, 
-            XBullModule 
-          } = await import('@creit.tech/stellar-wallets-kit');
+          const { StellarWalletsKit } = await import('@creit.tech/stellar-wallets-kit');
+          const { defaultModules } = await import('@creit.tech/stellar-wallets-kit/modules/utils');
+          console.log("StellarWalletsKit found:", !!StellarWalletsKit);
+          console.log("defaultModules found:", !!defaultModules);
           
-          const newKit = new StellarWalletsKit({
-            network: WalletNetwork.TESTNET,
-            modules: [
-              new FreighterModule(),
-              new AlbedoModule(),
-              new XBullModule(),
-            ],
+          StellarWalletsKit.init({
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            network: Networks.TESTNET as any,
+            modules: defaultModules(),
           });
           
-          setKit(newKit);
+          console.log("Setting kit in state...");
+          setKit(() => StellarWalletsKit);
+          console.log("Kit set in state.");
         } catch (error) {
           console.error("Failed to initialize StellarWalletsKit", error);
         }

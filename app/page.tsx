@@ -47,7 +47,7 @@ export default function MainDashboardPage() {
       }
     } catch (error: unknown) {
       console.error("Dashboard execution error:", error);
-      const message = error instanceof Error ? error.message : String(err);
+      const message = error instanceof Error ? error.message : String(error);
       alert(`Transaction failed: ${message}`);
     } finally {
       setIsExecuting(false);

@@ -5,6 +5,7 @@ import { useStellar } from '@/context/StellarContext';
 
 export default function WalletConnection() {
   const { address, setAddress, kit } = useStellar();
+  console.log("WalletConnection render: address=", address, "kit=", !!kit);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -13,11 +14,14 @@ export default function WalletConnection() {
     setLoading(true);
     setError(null);
     try {
-      await kit.openModal({
+      const { address: connectedAddress } = await kit.authModal({
         onSelection: (pubKey: string) => {
           setAddress(pubKey);
         }
       });
+      if (connectedAddress) {
+        setAddress(connectedAddress);
+      }
     } catch (err: unknown) {
       console.error("Connection failed:", err);
       const message = err instanceof Error ? err.message : String(err);
