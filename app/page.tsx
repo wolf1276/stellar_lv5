@@ -3,11 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { stellar } from '@/lib/stellar-helper';
 import { useStellar } from '@/context/StellarContext';
+import { DashboardModals } from '@/components/DashboardModals';
 
 export default function MainDashboardPage() {
   const { address, balances, refreshBalances, kit } = useStellar();
   const [isExecuting, setIsExecuting] = useState(false);
   const [xlmPrice, setXlmPrice] = useState<number | null>(null);
+  const [activeModal, setActiveModal] = useState<'deposit' | 'transfer' | null>(null);
 
   const hasFetched = React.useRef(false);
   useEffect(() => {
@@ -87,10 +89,16 @@ export default function MainDashboardPage() {
           </div>
           
           <div className="flex gap-3">
-            <button className="btn-primary btn-pill shadow-pill active:scale-[0.98]">
+            <button 
+              onClick={() => setActiveModal('deposit')}
+              className="btn-primary btn-pill shadow-pill active:scale-[0.98]"
+            >
               Deposit Assets
             </button>
-            <button className="px-8 py-2.5 border border-primary text-primary font-bold text-sm rounded-full hover:bg-primary/5 transition-all active:scale-[0.98]">
+            <button 
+              onClick={() => setActiveModal('transfer')}
+              className="px-8 py-2.5 border border-primary text-primary font-bold text-sm rounded-full hover:bg-primary/5 transition-all active:scale-[0.98]"
+            >
               Transfer
             </button>
           </div>
@@ -258,6 +266,11 @@ export default function MainDashboardPage() {
           </div>
         </div>
       </section>
+
+      <DashboardModals 
+        activeModal={activeModal} 
+        onClose={() => setActiveModal(null)} 
+      />
     </div>
   );
 }
