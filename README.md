@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./public/preview.png" alt="SALA Dashboard Preview" width="100%" />
+  <img src="./public/screenshot.png" alt="SALA Dashboard Screenshot" width="100%" />
   
   <br />
   <br />
