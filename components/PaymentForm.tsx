@@ -34,7 +34,9 @@ const PaymentForm = ({ onSuccess }: PaymentFormProps) => {
         memo
       );
 
-      const { signedTxXdr } = await kit.signTransaction(xdr);
+      const { signedTxXdr } = await kit.signTransaction(xdr, {
+        networkPassphrase: "Test SDF Network ; September 2015"
+      });
 
       const result = await stellar.submitXDR(signedTxXdr);
 

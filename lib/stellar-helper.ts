@@ -45,25 +45,38 @@ class StellarHelper {
    */
   async getBalance(address: string): Promise<{ xlm: string; assets: StellarAsset[] }> {
     try {
-      const account = await this.server.loadAccount(address);
-      const xlm = account.balances.find(b => b.asset_type === 'native')?.balance || "0";
-      const assets = account.balances
-        .filter(b => b.asset_type !== 'native')
-        .map(b => ({
-          code: (b as Horizon.HorizonApi.BalanceLineAsset).asset_code || "Unknown",
-          balance: b.balance
-        }));
-      return { xlm, assets };
+      return await this.fetchAccountData(address);
     } catch (error: unknown) {
       if (error && typeof error === 'object' && 'response' in error) {
         const resp = error.response as { status: number };
         if (resp.status === 404) {
-          throw new Error("Account not found on Testnet. Please fund it via Friendbot.");
+          console.log(`Account ${address} not found on Testnet. Attempting to fund via Friendbot...`);
+          try {
+            const res = await fetch(`https://friendbot.stellar.org/?addr=${address}`);
+            await res.json();
+            console.log(`Account ${address} funded successfully.`);
+            return await this.fetchAccountData(address);
+          } catch (fundError) {
+            console.error("Friendbot funding failed:", fundError);
+            throw new Error("Account not found on Testnet and Friendbot auto-funding failed.");
+          }
         }
       }
       const message = error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to fetch balance: ${message}`);
     }
+  }
+
+  private async fetchAccountData(address: string): Promise<{ xlm: string; assets: StellarAsset[] }> {
+    const account = await this.server.loadAccount(address);
+    const xlm = account.balances.find(b => b.asset_type === 'native')?.balance || "0";
+    const assets = account.balances
+      .filter(b => b.asset_type !== 'native')
+      .map(b => ({
+        code: (b as Horizon.HorizonApi.BalanceLineAsset).asset_code || "Unknown",
+        balance: b.balance
+      }));
+    return { xlm, assets };
   }
 
   /**
