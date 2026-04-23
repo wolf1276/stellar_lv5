@@ -40,6 +40,7 @@ SALA provides a **unified execution layer**:
 
 ## ✨ Key Features
 
+- 🛡️ **Institutional-Grade Safety**: Full access control, custom error handling, and a contract-level circuit breaker (pause mechanism).
 - ⚡️ **Atomic Arbitrage**: Multi-hop swaps (e.g., `XLM -> USDC -> AQUA -> XLM`) that guarantee profitability or revert the transaction.
 - 🧠 **AI-Optimized Routing**: Intelligent heuristics that prioritize liquidity pools based on historical volatility and order book depth.
 - 🛡️ **Liquidation Module**: Real-time health factor monitoring for overcollateralized lending positions, with one-click liquidation triggers.
@@ -61,11 +62,14 @@ The core logic resides in a modular Python engine designed for sub-millisecond o
 - **⚙️ Execution Controller**: Generates base-64 encoded XDR transactions and manages autonomous submission or routes them to the dashboard for manual user approval.
 
 ### 2. On-Chain Atomicity (Soroban Smart Contracts)
-Written in Rust, our Soroban contracts provide the final safety guarantee for all operations:
+Written in Rust, our Soroban contracts provide the final safety guarantee for all operations. The **ArbExecutor** contract is engineered for maximum quality and security:
 
-- **⚡ Atomic Swaps**: Executes multi-hop swaps in a single transaction. If any leg of the trade fails or the final balance is lower than the initial investment, the entire transaction **reverts**, protecting the user's principal.
-- **🔗 Vault Integration**: Interacts directly with Stellar's native Liquidity Pools (CAP-38) and Soroban-based AMMs through a unified interface.
-- **🚨 Liquidation Handler**: Validates health factors of overcollateralized positions and executes atomic debt-repayment/collateral-claim cycles.
+- **🔐 Robust Access Control**: Uses Soroban's `require_auth` to ensure only the authorized admin can trigger swaps, liquidations, or withdrawals.
+- **⚡ Atomic Swaps**: Executes multi-hop swaps in a single transaction. If any leg of the trade fails or the final balance is lower than the initial investment, the entire transaction **reverts** with custom error codes (e.g., `InsufficientProfit`).
+- **🛑 Circuit Breaker**: Includes a `set_paused` mechanism that allows the admin to instantly stop all contract operations in case of extreme market volatility or protocol emergency.
+- **🔗 Protocol Integration**: Interacts directly with Stellar's native Liquidity Pools and Soroban-based AMMs through a unified, path-validated interface.
+- **🚨 Liquidation Handler**: Validates health factors and executes atomic debt-repayment/collateral-claim cycles, returning rewards directly to the secure vault.
+
 
 ### 3. Institutional Frontend (Next.js Dashboard)
 A professional-grade interface for monitoring and manual intervention:
