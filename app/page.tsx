@@ -232,46 +232,40 @@ export default function MainDashboardPage() {
               </button>
             </div>
 
-            {/* Opportunity Card 2 (Placeholder) */}
-            <div className="card-binance p-8 flex flex-col opacity-60 grayscale-[0.5]">
+            {/* Opportunity Card 2 — Skeleton (scanning) */}
+            <div className="card-binance p-8 flex flex-col animate-pulse">
               <div className="flex justify-between items-start mb-8">
-                <div className="px-2 py-0.5 bg-slate/10 text-slate text-[9px] font-bold rounded border border-slate/20">
-                  CROSS-DEX
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping inline-block" />
+                  <div className="h-3 w-16 bg-slate/20 rounded" />
                 </div>
-                <div className="flex flex-col items-end">
-                  <span className="text-ink font-bold text-xl">---</span>
-                  <span className="text-slate text-[9px] font-bold uppercase">Scanning...</span>
-                </div>
+                <div className="h-5 w-10 bg-slate/20 rounded" />
               </div>
-
-              <div className="flex-1 flex items-center justify-center py-8">
-                <p className="text-slate text-sm italic font-medium">Monitoring Soroban Liquidity Pools</p>
+              <div className="flex-1 flex flex-col gap-3 py-6">
+                <div className="h-3 w-full bg-slate/10 rounded" />
+                <div className="h-3 w-3/4 bg-slate/10 rounded" />
+                <div className="h-3 w-1/2 bg-slate/10 rounded" />
               </div>
-
-              <button disabled className="w-full py-3 bg-slate/10 text-slate font-bold rounded-md text-sm cursor-not-allowed">
-                Wait for Signal
-              </button>
+              <p className="text-center text-[10px] text-slate font-medium italic mb-4">Scanning live Soroban pools...</p>
+              <div className="h-10 w-full bg-slate/10 rounded-md" />
             </div>
-            
-            {/* Opportunity Card 3 (Placeholder) */}
-            <div className="card-binance p-8 flex flex-col opacity-60 grayscale-[0.5]">
+
+            {/* Opportunity Card 3 — Skeleton (scanning) */}
+            <div className="card-binance p-8 flex flex-col animate-pulse">
               <div className="flex justify-between items-start mb-8">
-                <div className="px-2 py-0.5 bg-slate/10 text-slate text-[9px] font-bold rounded border border-slate/20">
-                  LIQUIDATION
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping inline-block" />
+                  <div className="h-3 w-20 bg-slate/20 rounded" />
                 </div>
-                <div className="flex flex-col items-end">
-                  <span className="text-ink font-bold text-xl">---</span>
-                  <span className="text-slate text-[9px] font-bold uppercase">Scanning...</span>
-                </div>
+                <div className="h-5 w-10 bg-slate/20 rounded" />
               </div>
-
-              <div className="flex-1 flex items-center justify-center py-8">
-                <p className="text-slate text-sm italic font-medium">Monitoring Lending Protocols</p>
+              <div className="flex-1 flex flex-col gap-3 py-6">
+                <div className="h-3 w-full bg-slate/10 rounded" />
+                <div className="h-3 w-2/3 bg-slate/10 rounded" />
+                <div className="h-3 w-1/2 bg-slate/10 rounded" />
               </div>
-
-              <button disabled className="w-full py-3 bg-slate/10 text-slate font-bold rounded-md text-sm cursor-not-allowed">
-                No Undercollateralized Debt
-              </button>
+              <p className="text-center text-[10px] text-slate font-medium italic mb-4">Monitoring lending protocols...</p>
+              <div className="h-10 w-full bg-slate/10 rounded-md" />
             </div>
           </div>
         </div>
