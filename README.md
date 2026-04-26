@@ -225,7 +225,7 @@ python main.py
 
 ## 🎥 Links & Deployment
 
-- 🌐 **Live App**: [https://stellar-lv5.vercel.app](https://stellar-lv5.vercel.app)
+- 🌐 **Live App**: https://stellar-lv5-y7np.vercel.app
 - 📝 **Contract Address (Testnet)**: `CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA` _(Successfully Deployed)_
 
 ---
