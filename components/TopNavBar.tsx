@@ -16,7 +16,7 @@ export const TopNavBar = () => {
       <div className="flex items-center">
         {/* Mobile Logo */}
         <Link href="/" className="flex items-center gap-2 md:hidden">
-          <Image src="/logo.png" alt="SALA Logo" width={32} height={32} className="object-contain" />
+          <Image src="/logo.png" alt="SALA Logo" width={32} height={32} className="object-contain rounded-full" />
           <span className="font-bold text-ink tracking-tight text-xl">SALA</span>
         </Link>
         
