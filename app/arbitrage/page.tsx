@@ -11,6 +11,8 @@ export default function ArbitrageExecutionPage() {
   const [isExecuting, setIsExecuting] = useState(false);
   const [spread, setSpread] = useState(0.45);
   const [score, setScore] = useState(75);
+  const [slippage, setSlippage] = useState<number | 'custom'>(0.1);
+  const [customSlippage, setCustomSlippage] = useState('');
 
   useEffect(() => {
     const fetchPrices = async () => {
@@ -157,24 +159,66 @@ export default function ArbitrageExecutionPage() {
                     </div>
                   </div>
                   
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-slate font-medium">Gross Spread</span>
-                      <span className="text-ink font-bold">{spread.toFixed(2)}%</span>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-slate font-medium">Gross Spread</span>
+                        <span className="text-ink font-bold">{spread.toFixed(2)}%</span>
+                      </div>
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-slate font-medium">Network Fee (XLM)</span>
+                        <span className="text-ink font-bold">0.00004</span>
+                      </div>
+
+                      {/* Slippage Tolerance Selector */}
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-slate font-medium">Slippage Tolerance</span>
+                        <div className="flex items-center gap-1">
+                          {[0.1, 0.5, 1.0].map((v) => (
+                            <button
+                              key={v}
+                              onClick={() => { setSlippage(v); setCustomSlippage(''); }}
+                              className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all border ${
+                                slippage === v
+                                  ? 'bg-primary text-ink border-primary'
+                                  : 'bg-snow text-slate border-border-light hover:border-ink'
+                              }`}
+                            >
+                              {v}%
+                            </button>
+                          ))}
+                          <button
+                            onClick={() => setSlippage('custom')}
+                            className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all border ${
+                              slippage === 'custom'
+                                ? 'bg-primary text-ink border-primary'
+                                : 'bg-snow text-slate border-border-light hover:border-ink'
+                            }`}
+                          >
+                            Custom
+                          </button>
+                        </div>
+                      </div>
+                      {slippage === 'custom' && (
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="text-slate font-medium" />
+                          <div className="flex items-center gap-1 border border-border-light rounded px-2 py-0.5 focus-within:border-ink">
+                            <input
+                              type="number" min="0" max="50" step="0.1"
+                              placeholder="e.g. 2"
+                              value={customSlippage}
+                              onChange={(e) => setCustomSlippage(e.target.value)}
+                              className="w-12 bg-transparent text-[10px] font-bold text-ink outline-none"
+                            />
+                            <span className="text-[10px] text-slate font-bold">%</span>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-slate font-medium">Settlement Speed</span>
+                        <span className="text-crypto-green font-bold">~5s</span>
+                      </div>
                     </div>
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-slate font-medium">Network Fee (XLM)</span>
-                      <span className="text-ink font-bold">0.00004</span>
-                    </div>
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-slate font-medium">Slippage Tolerance</span>
-                      <span className="text-ink font-bold">0.10%</span>
-                    </div>
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-slate font-medium">Settlement Speed</span>
-                      <span className="text-crypto-green font-bold">~5s</span>
-                    </div>
-                  </div>
                 </div>
 
                 <div className="mt-12">
