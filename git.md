@@ -98,6 +98,17 @@
 
 ---
 
+### 9. `fix: resolve frontend lint and contract build CI failures`
+
+| Field | Detail |
+|---|---|
+| **Username** | wolf1276 |
+| **Problem Addressed** | Both Frontend and Contract CI pipelines were failing. Frontend failed due to `react-hooks/set-state-in-effect` lint errors. Contracts failed because `testutils` were pulling host-only dependencies into the WASM build. |
+| **Changes Made** | **Frontend:** Refactored `TopNavBar.tsx` to use `useMemo` for search results and handled visibility in `onChange`. Wrapped session rehydration in `StellarContext.tsx` with a microtask. **Contracts:** Moved `soroban-sdk` test features to `dev-dependencies` in `Cargo.toml`. |
+| **Files Modified** | `components/TopNavBar.tsx`, `context/StellarContext.tsx`, `contracts/arb_executor/Cargo.toml` |
+
+---
+
 ## Push Summary
 
 ```
