@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { toast } from 'sonner';
 import { stellar } from '@/lib/stellar-helper';
 import { useStellar } from '@/context/StellarContext';
@@ -175,9 +176,9 @@ export default function MainDashboardPage() {
                   <div key={i} className="flex-1 bg-crypto-green/30 rounded-t-sm" style={{ height: `${h}%` }} />
                 ))}
               </div>
-              <button className="w-full py-3 bg-snow hover:bg-border-light text-ink font-bold rounded-md transition-all text-xs uppercase tracking-widest">
+              <Link href="/history" className="w-full py-3 bg-snow hover:bg-border-light text-ink font-bold rounded-md transition-all text-xs uppercase tracking-widest text-center block">
                 View History
-              </button>
+              </Link>
             </div>
           </div>
         </div>
