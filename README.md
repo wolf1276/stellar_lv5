@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="/Users/ahir/Projects/ahir_stellar/ui-image/starting.readme.png" alt="SALA Dashboard Screenshot" width="100%" />
+  <img src="./ui-image/starting.readme.png" alt="SALA Dashboard Screenshot" width="100%" />
   
   <br />
   <br />
