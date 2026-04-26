@@ -6,6 +6,10 @@ import { toast } from 'sonner';
 import { stellar } from '@/lib/stellar-helper';
 import { useStellar } from '@/context/StellarContext';
 import { DashboardModals } from '@/components/DashboardModals';
+import { nativeToScVal } from '@stellar/stellar-sdk';
+
+// Replace with your actual deployed contract ID
+const ARB_EXECUTOR_CONTRACT_ID = "C...YOUR_CONTRACT_ID";
 
 export default function MainDashboardPage() {
   const { address, balances, refreshBalances, kit } = useStellar();
@@ -36,13 +40,42 @@ export default function MainDashboardPage() {
       });
       return;
     }
+
+    if (ARB_EXECUTOR_CONTRACT_ID.startsWith("C...")) {
+      toast.error('Contract ID not configured', {
+        description: 'Please deploy the ArbExecutor contract and update the ARB_EXECUTOR_CONTRACT_ID in app/page.tsx',
+      });
+      return;
+    }
+
     setIsExecuting(true);
     try {
-      const xdr = await stellar.buildPaymentXDR(
-        address, 
-        address, 
-        "0.00001", 
-        "sala-dashboard-proof"
+      // 1. Prepare steps (Triangular: XLM -> USDC -> AQUA -> XLM)
+      const steps = [
+        {
+          pool: "GBBD67IF65Y6XGIBYI4L6T5XTA6O5PWHSTWVCX6O36S67554YTSAWBXI",
+          token_in: "native",
+          token_out: "CCW6S4S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7", // Example USDC ID
+          min_out: 0n,
+        },
+        // Additional steps...
+      ];
+
+      const amountIn = 10000000000n; // 1000 XLM
+      const minAmountOut = 10120000000n; // 1.2% profit
+
+      const scArgs = [
+        nativeToScVal(steps),
+        nativeToScVal(amountIn),
+        nativeToScVal(minAmountOut),
+      ];
+
+      // 2. Build Invoke Contract XDR
+      const xdr = await stellar.buildInvokeContractXDR(
+        address,
+        ARB_EXECUTOR_CONTRACT_ID,
+        "execute_arbitrage",
+        scArgs
       );
       
       const { signedTxXdr } = await kit.signTransaction(xdr, {
@@ -51,8 +84,8 @@ export default function MainDashboardPage() {
       const result = await stellar.submitXDR(signedTxXdr);
       
       if (result.success) {
-        toast.success('Transaction confirmed on Testnet!', {
-          description: `Hash: ${result.hash?.substring(0, 16)}...`,
+        toast.success('Strategy executed successfully!', {
+          description: `Transaction confirmed on Testnet. Hash: ${result.hash?.substring(0, 16)}...`,
         });
         refreshBalances();
       } else {
@@ -271,4 +304,3 @@ export default function MainDashboardPage() {
     </div>
   );
 }
-

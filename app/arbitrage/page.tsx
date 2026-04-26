@@ -5,6 +5,10 @@ import { toast } from 'sonner';
 import { useStellar } from '@/context/StellarContext';
 import { stellar } from '@/lib/stellar-helper';
 import { calculateOpportunityScore } from '@/lib/scoring';
+import { nativeToScVal } from '@stellar/stellar-sdk';
+
+// Replace with your actual deployed contract ID
+const ARB_EXECUTOR_CONTRACT_ID = "C...YOUR_CONTRACT_ID";
 
 export default function ArbitrageExecutionPage() {
   const { address, balances, refreshBalances, kit } = useStellar();
@@ -31,15 +35,46 @@ export default function ArbitrageExecutionPage() {
       });
       return;
     }
+
+    if (ARB_EXECUTOR_CONTRACT_ID.startsWith("C...")) {
+      toast.error('Contract ID not configured', {
+        description: 'Please deploy the ArbExecutor contract and update the ARB_EXECUTOR_CONTRACT_ID in app/arbitrage/page.tsx',
+      });
+      return;
+    }
+
     setIsExecuting(true);
     try {
-      const xdr = await stellar.buildPaymentXDR(
-        address, 
-        address, 
-        "0.00001", 
-        "arb-proof"
+      // 1. Prepare steps (Simulation of a triangular arbitrage: XLM -> USDC -> yXLM -> XLM)
+      const steps = [
+        {
+          pool: "GBBD67IF65Y6XGIBYI4L6T5XTA6O5PWHSTWVCX6O36S67554YTSAWBXI", // XLM/USDC Pool
+          token_in: "native",
+          token_out: "CCW6S4S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7", // USDC Contract ID
+          min_out: 1100, // Simulated min out
+        },
+        // Additional steps would go here
+      ];
+
+      // 2. Build Soroban Arguments
+      const amountIn = 10000000000n; // 1000 XLM (with 7 decimals)
+      const minAmountOut = 10100000000n; // 1010 XLM (expected profit)
+
+      const scArgs = [
+        nativeToScVal(steps),
+        nativeToScVal(amountIn),
+        nativeToScVal(minAmountOut),
+      ];
+
+      // 3. Build Invoke Contract XDR
+      const xdr = await stellar.buildInvokeContractXDR(
+        address,
+        ARB_EXECUTOR_CONTRACT_ID,
+        "execute_arbitrage",
+        scArgs
       );
 
+      // 4. Sign and Submit
       const { signedTxXdr } = await kit.signTransaction(xdr, {
         networkPassphrase: "Test SDF Network ; September 2015"
       });
@@ -47,7 +82,7 @@ export default function ArbitrageExecutionPage() {
       const result = await stellar.submitXDR(signedTxXdr);
 
       if (result.success) {
-        toast.success('Arbitrage transaction successful!', {
+        toast.success('Arbitrage execution confirmed!', {
           description: `Hash: ${result.hash?.substring(0, 16)}...`,
           action: {
             label: 'View Explorer',
