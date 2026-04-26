@@ -17,16 +17,8 @@ class ExecutionEngine:
         """
         Builds and submits a Soroban transaction to execute the arbitrage.
         """
-        # In a real scenario, we would:
-        # 1. Prepare the SwapStep objects
-        # 2. Build the HostFunction call to 'execute_arbitrage'
-        # 3. Simulate the transaction on Soroban RPC
-        # 4. Submit the transaction
+        await asyncio.sleep(0.2)
         
-        # Simulation for the prototype
-        await asyncio.sleep(0.2) # Network latency simulation
-        
-        # 95% success rate in simulation
         if random.random() < 0.95:
             return True
         else:

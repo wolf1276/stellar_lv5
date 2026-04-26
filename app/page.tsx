@@ -71,7 +71,6 @@ export default function MainDashboardPage() {
 
   return (
     <div className="flex flex-col w-full min-h-screen">
-      {/* SECTION 1: Portfolio Hero (Light) */}
       <section className="bg-white px-6 md:px-12 py-12 border-b border-border-light">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
           <div className="flex-1">
@@ -116,7 +115,6 @@ export default function MainDashboardPage() {
         </div>
       </section>
 
-      {/* SECTION 2: Asset Breakdown (Light/Snow) */}
       <section className="bg-snow px-6 md:px-12 py-16">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12">
           <div className="lg:col-span-8">
@@ -129,7 +127,6 @@ export default function MainDashboardPage() {
               </div>
               
               <div className="divide-y divide-border-light">
-                {/* XLM Row */}
                 <div className="grid grid-cols-12 px-6 py-5 hover:bg-snow transition-colors items-center bg-white">
                   <div className="col-span-4 flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-sm">
@@ -141,7 +138,6 @@ export default function MainDashboardPage() {
                   <div className="col-span-4 text-right text-crypto-green font-bold">${totalUsdValue || "0.00"}</div>
                 </div>
 
-                {/* Other Assets */}
                 {balances.assets.map((asset, idx) => (
                   <div key={idx} className="grid grid-cols-12 px-6 py-5 hover:bg-snow transition-colors items-center bg-white">
                     <div className="col-span-4 flex items-center gap-3">
@@ -184,7 +180,6 @@ export default function MainDashboardPage() {
         </div>
       </section>
 
-      {/* SECTION 3: Opportunities (Light) */}
       <section className="bg-white px-6 md:px-12 py-20">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
@@ -198,7 +193,6 @@ export default function MainDashboardPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Opportunity Card 1 */}
             <div className="card-binance p-8 flex flex-col">
               <div className="flex justify-between items-start mb-8">
                 <div className="px-2 py-0.5 bg-crypto-green/10 text-crypto-green text-[9px] font-bold rounded border border-crypto-green/20">
@@ -233,7 +227,6 @@ export default function MainDashboardPage() {
               </button>
             </div>
 
-            {/* Opportunity Card 2 — Skeleton (scanning) */}
             <div className="card-binance p-8 flex flex-col animate-pulse">
               <div className="flex justify-between items-start mb-8">
                 <div className="flex items-center gap-1.5">
@@ -251,7 +244,6 @@ export default function MainDashboardPage() {
               <div className="h-10 w-full bg-slate/10 rounded-md" />
             </div>
 
-            {/* Opportunity Card 3 — Skeleton (scanning) */}
             <div className="card-binance p-8 flex flex-col animate-pulse">
               <div className="flex justify-between items-start mb-8">
                 <div className="flex items-center gap-1.5">

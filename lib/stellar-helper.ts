@@ -103,7 +103,6 @@ class StellarHelper {
         txBuilder.addMemo(Memo.text(memo));
       }
 
-      // 60-second timeout for security
       const tx = txBuilder.setTimeout(60).build();
       return tx.toXDR();
     } catch (error: unknown) {

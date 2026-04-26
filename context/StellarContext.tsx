@@ -33,7 +33,6 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
     assets: [] 
   });
 
-  // Wrapper: persist public key only (no signing credentials)
   const setAddress = useCallback((addr: string | null) => {
     setAddressState(addr);
     if (addr) {
@@ -43,7 +42,6 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // Rehydrate session from localStorage on mount
   useEffect(() => {
     const cached = localStorage.getItem('sala_wallet');
     if (cached) {
@@ -65,7 +63,6 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
 
   const clearAlerts = useCallback(() => setNotifications([]), []);
 
-  // Initialize the kit with an instance (required for v2.x)
   useEffect(() => {
     const initKit = async () => {
       if (typeof window !== 'undefined') {

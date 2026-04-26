@@ -5,6 +5,8 @@ use soroban_sdk::{
 
 #[cfg(test)]
 mod test;
+#[cfg(test)]
+mod mock;
 
 
 #[contracterror]
@@ -49,32 +51,20 @@ impl ArbExecutor {
         env.storage().instance().set(&DataKey::Admin, &admin);
         env.storage().instance().set(&DataKey::Paused, &false);
         
-        log!(&env, "ArbExecutor initialized with admin: {}", admin);
         Ok(())
     }
 
-    /// Executes a multi-hop arbitrage swap chain atomically.
-    /// 
-    /// # Arguments
-    /// * `steps` - A vector of SwapStep defining the swap path.
-    /// * `amount_in` - Initial amount of the first token to swap.
-    /// * `min_profit` - Minimum required profit (final_balance - initial_balance) in the base token.
-    /// 
-    /// # Returns
-    /// The final amount received after all swaps.
     pub fn execute_arbitrage(
         env: Env,
         steps: Vec<SwapStep>,
         amount_in: i128,
         min_profit: i128,
     ) -> Result<i128, Error> {
-        // Circuit breaker check
         let is_paused: bool = env.storage().instance().get(&DataKey::Paused).unwrap_or(false);
         if is_paused {
             return Err(Error::ContractPaused);
         }
 
-        // Access control: only the admin can trigger execution
         let admin: Address = env.storage().instance().get(&DataKey::Admin).ok_or(Error::NotInitialized)?;
         admin.require_auth();
 
@@ -88,7 +78,6 @@ impl ArbExecutor {
         let first_step = steps.get(0).unwrap();
         let first_token_client = token::Client::new(&env, &first_step.token_in);
         
-        // Track the starting balance of the base token to verify profit at the end.
         let initial_contract_balance = first_token_client.balance(&env.current_contract_address());
 
         let mut current_amount = amount_in;
@@ -96,7 +85,6 @@ impl ArbExecutor {
         for i in 0..steps.len() {
             let step = steps.get(i).unwrap();
             
-            // Path validation: ensure the output of the previous step is the input of the current step
             if i > 0 {
                 let prev_step = steps.get(i - 1).unwrap();
                 if prev_step.token_out != step.token_in {
@@ -104,12 +92,9 @@ impl ArbExecutor {
                 }
             }
 
-            // Move tokens to the pool
             let token_in_client = token::Client::new(&env, &step.token_in);
             token_in_client.transfer(&env.current_contract_address(), &step.pool, &current_amount);
 
-            // Execute the swap on the pool.
-            // Interface: swap(to: Address, token_in: Address, token_out: Address, amount_in: i128, min_amount_out: i128)
             let out_amount: i128 = env.invoke_contract(
                 &step.pool,
                 &Symbol::new(&env, "swap"),
@@ -118,14 +103,13 @@ impl ArbExecutor {
                     step.token_in.clone(),
                     step.token_out.clone(),
                     current_amount,
-                    0i128, // Profit check happens globally at the end
+                    0i128,
                 ).into_val(&env),
             );
 
             current_amount = out_amount;
         }
 
-        // Global Profit Enforcement
         let last_step = steps.get(steps.len() - 1).unwrap();
         if first_step.token_in == last_step.token_out {
             let final_contract_balance = first_token_client.balance(&env.current_contract_address());
@@ -160,12 +144,9 @@ impl ArbExecutor {
             return Err(Error::NegativeAmount);
         }
 
-        // 1. Transfer debt tokens to the protocol
         let debt_client = token::Client::new(&env, &debt_token);
         debt_client.transfer(&env.current_contract_address(), &protocol, &amount);
 
-        // 2. Trigger protocol liquidation
-        // Interface: liquidate(liquidator: Address, user: Address, debt_token: Address, collateral_token: Address, amount: i128)
         env.invoke_contract::<()>(
             &protocol,
             &Symbol::new(&env, "liquidate"),
