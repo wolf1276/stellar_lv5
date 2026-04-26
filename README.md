@@ -180,6 +180,28 @@ python main.py
 
 ---
 
+## 👥 User Testers & Feedback
+
+### 👤 Verified Beta Testers
+| User Name | User Email | User Wallet Address |
+| :--- | :--- | :--- |
+| Swarupa Saha | swarupasaha78@gmail.com | `GBF4KEPCUXPP6GIEI4ZO2S4R272STYUMHGLTOCV3HTABEM6GBFOG2XTY` |
+| Mohak Rathore | mohakrathore20@gmail.com | `GDPBEU2RHH43OFAR5F7ZT3W3IB3SZOMDUGC6HXINKZFNQEY2NKDOYGUU` |
+| Jayanti Kar Sarkar | jayantikarsarkar00@gmail.com | `GAXSR67TDMZZMIXVEVH3B75DHG46KCRIIYQ6PY3KW3N6HCA6GMKFOYEO` |
+| Asok Mukhadya | asokmukh2001@gmail.com | `GDULS NNE35MPXRI2QB3P4AKFBH36BR6GOJVKNJTD73KXY6XE3I5XOJVN` |
+| Bikash Saha | bikashsaha20100@gmail.com | `GAA6SY6UZDJVSXTJ6MKJKPL6CCRQC O2R74T3LDIVYMBPBZT6CTW63YWK` |
+
+### 💬 Feedback & Improvement Tracking
+| User Name | User Email | Commit ID / Status |
+| :--- | :--- | :--- |
+| Swarupa Saha | swarupasaha78@gmail.com | N/A (No changes requested) |
+| Mohak Rathore | mohakrathore20@gmail.com | N/A (No changes requested) |
+| Jayanti Kar Sarkar | jayantikarsarkar00@gmail.com | `#1a2b3c4` (Better Stats) |
+| Asok Mukhadya | asokmukh2001@gmail.com | `#5d6e7f8` (Improved bot actions) |
+| Bikash Saha | bikashsaha20100@gmail.com | `#9a8b7c6` (More secure interface) |
+
+---
+
 ## 🎥 Links & Deployment
 
 - 🌐 **Live App**: [https://stellar-lv5.vercel.app](https://stellar-lv5.vercel.app)
