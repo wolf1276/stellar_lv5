@@ -9,6 +9,7 @@ fn test_initialize_and_get_admin() {
     let client = ArbExecutorClient::new(&env, &contract_id);
 
     let admin = Address::generate(&env);
+    env.mock_all_auths();
     client.initialize(&admin);
 
     assert_eq!(client.get_admin(), admin);
@@ -21,6 +22,7 @@ fn test_already_initialized() {
     let client = ArbExecutorClient::new(&env, &contract_id);
 
     let admin = Address::generate(&env);
+    env.mock_all_auths();
     client.initialize(&admin);
 
     let result = client.try_initialize(&admin);
@@ -34,6 +36,7 @@ fn test_pause_and_resume() {
     let client = ArbExecutorClient::new(&env, &contract_id);
 
     let admin = Address::generate(&env);
+    env.mock_all_auths();
     client.initialize(&admin);
 
     assert!(!client.is_paused());
@@ -53,6 +56,7 @@ fn test_arbitrage_fails_when_paused() {
     let client = ArbExecutorClient::new(&env, &contract_id);
 
     let admin = Address::generate(&env);
+    env.mock_all_auths();
     client.initialize(&admin);
 
     env.mock_all_auths();
@@ -70,6 +74,7 @@ fn test_arbitrage_empty_steps() {
     let client = ArbExecutorClient::new(&env, &contract_id);
 
     let admin = Address::generate(&env);
+    env.mock_all_auths();
     client.initialize(&admin);
 
     env.mock_all_auths();
@@ -85,6 +90,7 @@ fn test_negative_amount_validation() {
     let client = ArbExecutorClient::new(&env, &contract_id);
 
     let admin = Address::generate(&env);
+    env.mock_all_auths();
     client.initialize(&admin);
 
     env.mock_all_auths();
@@ -123,6 +129,7 @@ fn test_successful_arbitrage_flow() {
             pool: pool_id.clone(),
             token_in: token_a_id.clone(),
             token_out: token_b_id.clone(),
+            min_out: 0,
         }
     ]);
 
