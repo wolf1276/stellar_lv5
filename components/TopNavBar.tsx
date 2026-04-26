@@ -17,28 +17,23 @@ export const TopNavBar = () => {
   const router = useRouter();
   const { notifications, clearAlerts } = useStellar();
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<SearchItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
 
-  // Filter search index on query change
-  useEffect(() => {
-    if (query.trim().length < 1) {
-      setResults([]);
-      setIsOpen(false);
-      return;
-    }
+  // Derived search results
+  const results = React.useMemo(() => {
+    if (query.trim().length < 1) return [];
     const q = query.toLowerCase();
-    const filtered = searchIndex.filter(
-      (item) =>
-        item.label.toLowerCase().includes(q) ||
-        item.description.toLowerCase().includes(q) ||
-        item.type.toLowerCase().includes(q)
-    );
-    setResults(filtered.slice(0, 6));
-    setIsOpen(true);
+    return searchIndex
+      .filter(
+        (item) =>
+          item.label.toLowerCase().includes(q) ||
+          item.description.toLowerCase().includes(q) ||
+          item.type.toLowerCase().includes(q)
+      )
+      .slice(0, 6);
   }, [query]);
 
   // Close dropdowns on outside click
@@ -85,8 +80,11 @@ export const TopNavBar = () => {
               placeholder="Search assets, pools, or routes..."
               type="text"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onFocus={() => results.length > 0 && setIsOpen(true)}
+              onChange={(e) => {
+                const val = e.target.value;
+                setQuery(val);
+                setIsOpen(val.trim().length > 0);
+              }}
             />
             {query && (
               <button onClick={() => { setQuery(''); setIsOpen(false); }} className="text-slate hover:text-ink ml-1">

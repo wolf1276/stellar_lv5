@@ -46,7 +46,10 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
   // Rehydrate session from localStorage on mount
   useEffect(() => {
     const cached = localStorage.getItem('sala_wallet');
-    if (cached) setAddressState(cached);
+    if (cached) {
+      // Use a microtask to avoid synchronous setState in effect body
+      Promise.resolve().then(() => setAddressState(cached));
+    }
   }, []);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
