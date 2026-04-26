@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./public/screenshot.png" alt="SALA Dashboard Screenshot" width="100%" />
+  <img src="/Users/ahir/Projects/ahir_stellar/ui-image/starting.readme.png" alt="SALA Dashboard Screenshot" width="100%" />
   
   <br />
   <br />
@@ -36,6 +36,23 @@ SALA provides a **unified execution layer**:
 2. **On-Chain Atomicity**: Soroban smart contracts execute complex multi-hop swaps or liquidations in a single, revert-protected transaction. If the final output isn't profitable, the transaction reverts.
 3. **Institutional UI**: A premium Dashboard for users to monitor market depth, track execution history, and manually execute "One-Click" arbitrage.
 
+<div align="center">
+  <table>
+    <tr>
+      <td align="center"><b>Profit Simulator</b><br/><img src="./ui-image/simulator.ui.png" width="100%" /></td>
+      <td align="center"><b>Execution Engine</b><br/><img src="./ui-image/execution.ui.png" width="100%" /></td>
+    </tr>
+    <tr>
+      <td align="center"><b>Risk Analysis</b><br/><img src="./ui-image/riskanalysis.ui.png" width="100%" /></td>
+      <td align="center"><b>Transaction History</b><br/><img src="./ui-image/history.ui.png" width="100%" /></td>
+    </tr>
+    <tr>
+      <td align="center"><b>Documentation</b><br/><img src="./ui-image/documentation.ui.png" width="100%" /></td>
+      <td align="center"><b>Support Center</b><br/><img src="./ui-image/support.ui.png" width="100%" /></td>
+    </tr>
+  </table>
+</div>
+
 ---
 
 ## ✨ Key Features
@@ -54,6 +71,7 @@ SALA provides a **unified execution layer**:
 SALA is architected as a **Hybrid High-Frequency DeFi Engine**, splitting responsibilities between a low-latency off-chain environment and a secure, atomic on-chain execution layer.
 
 ### 1. Off-Chain Intelligence (Python Engine)
+
 The core logic resides in a modular Python engine designed for sub-millisecond opportunity detection:
 
 - **📡 Data Layer**: Connects to Horizon and Soroban RPC nodes via asynchronous streaming to maintain a real-time shadow-state of liquidity pool reserves.
@@ -62,6 +80,7 @@ The core logic resides in a modular Python engine designed for sub-millisecond o
 - **⚙️ Execution Controller**: Generates base-64 encoded XDR transactions and manages autonomous submission or routes them to the dashboard for manual user approval.
 
 ### 2. On-Chain Atomicity (Soroban Smart Contracts)
+
 Written in Rust, our Soroban contracts provide the final safety guarantee for all operations. The **ArbExecutor** contract is engineered for maximum quality and security:
 
 - **🔐 Robust Access Control**: Uses Soroban's `require_auth` to ensure only the authorized admin can trigger swaps, liquidations, or withdrawals.
@@ -70,8 +89,8 @@ Written in Rust, our Soroban contracts provide the final safety guarantee for al
 - **🔗 Protocol Integration**: Interacts directly with Stellar's native Liquidity Pools and Soroban-based AMMs through a unified, path-validated interface.
 - **🚨 Liquidation Handler**: Validates health factors and executes atomic debt-repayment/collateral-claim cycles, returning rewards directly to the secure vault.
 
-
 ### 3. Institutional Frontend (Next.js Dashboard)
+
 A professional-grade interface for monitoring and manual intervention:
 
 - **📊 Live Monitoring**: Real-time visualization of market depth, pool reserves, and detected opportunities.
@@ -85,8 +104,8 @@ A professional-grade interface for monitoring and manual intervention:
 1. **Detection**: Bot identifies a price discrepancy between Pool A and Pool B.
 2. **Simulation**: The engine simulates the trade against the current ledger state to calculate expected profit.
 3. **Execution**:
-    - **Auto-Mode**: Bot submits signed XDR directly to the network.
-    - **Manual-Mode**: Dashboard alerts the user and requests a wallet signature.
+   - **Auto-Mode**: Bot submits signed XDR directly to the network.
+   - **Manual-Mode**: Dashboard alerts the user and requests a wallet signature.
 4. **Verification**: The Soroban contract performs a final balance check. If `Output < Input + Fee`, it triggers a panic to revert the state.
 
 ```mermaid
@@ -183,22 +202,24 @@ python main.py
 ## 👥 User Testers & Feedback
 
 ### 👤 Verified Beta Testers
-| User Name           | Email                          | Wallet Address |
-|--------------------|-------------------------------|----------------|
-| Swarupa Saha       | swarupasaha78@gmail.com       | GBF4KEPCUXPP6GIEI4ZO2S4R272STYUMHGLTOCV3HTABEM6GBFOG2XTY |
-| Mohak Rathore      | mohakrathore20@gmail.com      | GDPBEU2RHH43OFAR5F7ZT3W3IB3SZOMDUGC6HXINKZFNQEY2NKDOYGUU |
-| Jayanti Kar Sarkar | jayantikarsarkar00@gmail.com  | GAXSR67TDMZZMIXVEVH3B75DHG46KCRIIYQ6PY3KW3N6HCA6GMKFOYEO |
-| Asok Mukhadya      | asokmukh2001@gmail.com        | GDULSNNE35MPXRI2QB3P4AKFBH36BR6GOJVKNJTD73KXY6XE3I5XOJVN |
-| Bikash Saha        | bikashsaha20100@gmail.com     | GCEZZHXTJ3DKLYGVFNKG4DFAQYKKXGGTL57REP3AQ3FASD2QEEYIECIX |
+
+| User Name          | User Email                   | User Wallet Address                                         |
+| :----------------- | :--------------------------- | :---------------------------------------------------------- |
+| Swarupa Saha       | swarupasaha78@gmail.com      | `GBF4KEPCUXPP6GIEI4ZO2S4R272STYUMHGLTOCV3HTABEM6GBFOG2XTY`  |
+| Mohak Rathore      | mohakrathore20@gmail.com     | `GDPBEU2RHH43OFAR5F7ZT3W3IB3SZOMDUGC6HXINKZFNQEY2NKDOYGUU`  |
+| Jayanti Kar Sarkar | jayantikarsarkar00@gmail.com | `GAXSR67TDMZZMIXVEVH3B75DHG46KCRIIYQ6PY3KW3N6HCA6GMKFOYEO`  |
+| Asok Mukhadya      | asokmukh2001@gmail.com       | `GDULS NNE35MPXRI2QB3P4AKFBH36BR6GOJVKNJTD73KXY6XE3I5XOJVN` |
+| Bikash Saha        | bikashsaha20100@gmail.com    | `GAA6SY6UZDJVSXTJ6MKJKPL6CCRQC O2R74T3LDIVYMBPBZT6CTW63YWK` |
 
 ### 💬 Feedback & Improvement Tracking
-| User Name           | Email                          | Wallet Address | Commit ID |
-|--------------------|-------------------------------|----------------|-----------|
-| Swarupa Saha       | swarupasaha78@gmail.com       | GBF4KEPCUXPP6GIEI4ZO2S4R272STYUMHGLTOCV3HTABEM6GBFOG2XTY | N/A |
-| Mohak Rathore      | mohakrathore20@gmail.com      | GDPBEU2RHH43OFAR5F7ZT3W3IB3SZOMDUGC6HXINKZFNQEY2NKDOYGUU | N/A |
-| Jayanti Kar Sarkar | jayantikarsarkar00@gmail.com  | GAXSR67TDMZZMIXVEVH3B75DHG46KCRIIYQ6PY3KW3N6HCA6GMKFOYEO | #1a2b3c4 |
-| Asok Mukhadya      | asokmukh2001@gmail.com        | GDULSNNE35MPXRI2QB3P4AKFBH36BR6GOJVKNJTD73KXY6XE3I5XOJVN | #5d6e7f8 |
-| Bikash Saha        | bikashsaha20100@gmail.com     | GCEZZHXTJ3DKLYGVFNKG4DFAQYKKXGGTL57REP3AQ3FASD2QEEYIECIX | #9a8b7c6 |
+
+| User Name          | User Email                   | Commit ID / Status                 |
+| :----------------- | :--------------------------- | :--------------------------------- |
+| Swarupa Saha       | swarupasaha78@gmail.com      | N/A (No changes requested)         |
+| Mohak Rathore      | mohakrathore20@gmail.com     | N/A (No changes requested)         |
+| Jayanti Kar Sarkar | jayantikarsarkar00@gmail.com | `#1a2b3c4` (Better Stats)          |
+| Asok Mukhadya      | asokmukh2001@gmail.com       | `#5d6e7f8` (Improved bot actions)  |
+| Bikash Saha        | bikashsaha20100@gmail.com    | `#9a8b7c6` (More secure interface) |
 
 ---
 
@@ -206,7 +227,6 @@ python main.py
 
 - 🌐 **Live App**: [https://stellar-lv5.vercel.app](https://stellar-lv5.vercel.app)
 - 📝 **Contract Address (Testnet)**: `CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA` _(Successfully Deployed)_
-- 📊 **Excel Sheet LINK**: [Google Spreadsheet](https://docs.google.com/spreadsheets/d/1tkFq_iBcwL_g24gOBOhqT5FLaT1Oz2m9srdpmzjJTOk/edit?usp=sharing)
 
 ---
 
