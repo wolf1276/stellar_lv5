@@ -247,49 +247,39 @@ python main.py
 ## 🧪 Test Reports
 
 ### 1. Smart Contract (Soroban/Rust)
+
 **Location**: `contracts/arb_executor/`
 
-| Test Case | Status | Description |
-|---|---|---|
-| `test_initialize_and_get_admin` | ✅ Pass | Verifies admin assignment on initialization. |
-| `test_already_initialized` | ✅ Pass | Ensures initialization cannot be called twice. |
-| `test_pause_and_resume` | ✅ Pass | Validates the circuit breaker toggle functionality. |
-| `test_arbitrage_fails_when_paused` | ✅ Pass | Confirms execution is blocked when paused. |
-| `test_arbitrage_empty_steps` | ✅ Pass | Validates error handling for empty trade paths. |
-| `test_negative_amount_validation` | ✅ Pass | Prevents invalid negative value operations. |
-| `test_successful_arbitrage_flow` | ✅ Pass | **Integration**: Simulated swap via `MockPool`. |
+| Test Case                          | Status  | Description                                         |
+| ---------------------------------- | ------- | --------------------------------------------------- |
+| `test_initialize_and_get_admin`    | ✅ Pass | Verifies admin assignment on initialization.        |
+| `test_already_initialized`         | ✅ Pass | Ensures initialization cannot be called twice.      |
+| `test_pause_and_resume`            | ✅ Pass | Validates the circuit breaker toggle functionality. |
+| `test_arbitrage_fails_when_paused` | ✅ Pass | Confirms execution is blocked when paused.          |
+| `test_arbitrage_empty_steps`       | ✅ Pass | Validates error handling for empty trade paths.     |
+| `test_negative_amount_validation`  | ✅ Pass | Prevents invalid negative value operations.         |
+| `test_successful_arbitrage_flow`   | ✅ Pass | **Integration**: Simulated swap via `MockPool`.     |
 
 **Total Result**: 7/7 Tests Passed (0 Failed)
 
 ### 2. Frontend (Next.js/TS)
+
 **Location**: Project Root
 
-| Suite | Tool | Status |
-|---|---|---|
-| Static Analysis | ESLint | ✅ Pass |
-| Type Safety | TypeScript | ✅ Pass |
-| Styling | Tailwind v4 | ✅ Pass |
+| Suite           | Tool        | Status  |
+| --------------- | ----------- | ------- |
+| Static Analysis | ESLint      | ✅ Pass |
+| Type Safety     | TypeScript  | ✅ Pass |
+| Styling         | Tailwind v4 | ✅ Pass |
 
 ### 3. Bot Engine (Python)
+
 **Location**: `bot/`
 
-| Component | Validation | Status |
-|---|---|---|
-| Data Layer | Runtime Verification | ✅ Ready |
-| Arb Engine | Logic Coverage | ✅ Ready |
-| Risk Manager | Constant-Time Check | ✅ Ready |
+| Component    | Validation           | Status   |
+| ------------ | -------------------- | -------- |
+| Data Layer   | Runtime Verification | ✅ Ready |
+| Arb Engine   | Logic Coverage       | ✅ Ready |
+| Risk Manager | Constant-Time Check  | ✅ Ready |
 
 ---
-
-## 🚀 Deployment & Installation
-
-### Prerequisites
-- [Stellar CLI](https://developers.stellar.org/docs/build/smart-contracts/getting-started/setup#install-the-stellar-cli)
-- Rust & Soroban target
-- Node.js (v20+)
-- Python 3.11+
-
-### Quick Start
-1. **Frontend**: `npm install && npm run dev`
-2. **Contracts**: `cd contracts/arb_executor && cargo test`
-3. **Bot**: `pip install -r requirements.txt && python bot/main.py`
