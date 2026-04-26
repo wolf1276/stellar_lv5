@@ -12,12 +12,12 @@ const WalletConnection = dynamic(() => import('./WalletConnection'), {
 
 export const TopNavBar = () => {
   return (
-    <header className="fixed top-0 left-0 right-0 md:left-64 z-50 bg-white/95 backdrop-blur-md flex justify-between items-center px-4 md:px-8 h-16 shadow-binance border-b border-border-light">
-      <div className="flex items-center">
+    <header className="fixed top-0 left-0 right-0 md:left-64 z-50 bg-white/95 backdrop-blur-md flex justify-between items-center px-4 md:px-8 h-16 shadow-binance border-b border-border-light gap-2">
+      <div className="flex items-center min-w-0 flex-shrink">
         {/* Mobile Logo */}
-        <Link href="/" className="flex items-center gap-2 md:hidden">
-          <Image src="/logo.png" alt="SALA Logo" width={32} height={32} className="object-contain rounded-full" />
-          <span className="font-bold text-ink tracking-tight text-xl">SALA</span>
+        <Link href="/" className="flex items-center gap-2 md:hidden max-w-[160px]">
+          <Image src="/logo.png" alt="SALA Logo" width={32} height={32} className="object-contain rounded-full flex-shrink-0" />
+          <span className="font-bold text-ink tracking-tight text-xl truncate">SALA</span>
         </Link>
         
         {/* Search Bar - Binance Style */}
@@ -31,7 +31,7 @@ export const TopNavBar = () => {
         </div>
       </div>
 
-      <div className="flex items-center space-x-6">
+      <div className="flex items-center space-x-6 flex-shrink-0">
         <button className="text-slate hover:text-ink transition-colors flex items-center">
           <span className="material-symbols-outlined text-[22px]">notifications</span>
         </button>
