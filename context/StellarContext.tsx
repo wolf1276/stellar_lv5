@@ -16,11 +16,27 @@ interface StellarContextType {
 const StellarContext = createContext<StellarContextType | undefined>(undefined);
 
 export function StellarProvider({ children }: { children: React.ReactNode }) {
-  const [address, setAddress] = useState<string | null>(null);
+  const [address, setAddressState] = useState<string | null>(null);
   const [balances, setBalances] = useState<{ xlm: string; assets: StellarAsset[] }>({ 
     xlm: "0.0000", 
     assets: [] 
   });
+
+  // Wrapper: persist public key only (no signing credentials)
+  const setAddress = useCallback((addr: string | null) => {
+    setAddressState(addr);
+    if (addr) {
+      localStorage.setItem('sala_wallet', addr);
+    } else {
+      localStorage.removeItem('sala_wallet');
+    }
+  }, []);
+
+  // Rehydrate session from localStorage on mount
+  useEffect(() => {
+    const cached = localStorage.getItem('sala_wallet');
+    if (cached) setAddressState(cached);
+  }, []);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [kit, setKit] = useState<any>(null);
