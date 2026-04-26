@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { stellar } from '@/lib/stellar-helper';
 import { useStellar } from '@/context/StellarContext';
 import { DashboardModals } from '@/components/DashboardModals';
@@ -28,7 +29,12 @@ export default function MainDashboardPage() {
   }, []);
 
   const handleExecuteArb = async () => {
-    if (!address || !kit) return alert("Please connect your wallet first.");
+    if (!address || !kit) {
+      toast.error('Connect your wallet to execute a strategy.', {
+        description: 'Use the Connect button in the top-right corner.',
+      });
+      return;
+    }
     setIsExecuting(true);
     try {
       const xdr = await stellar.buildPaymentXDR(
@@ -44,15 +50,17 @@ export default function MainDashboardPage() {
       const result = await stellar.submitXDR(signedTxXdr);
       
       if (result.success) {
-        alert(`Success! Transaction Hash: ${result.hash}\nVerified on Testnet.`);
+        toast.success('Transaction confirmed on Testnet!', {
+          description: `Hash: ${result.hash?.substring(0, 16)}...`,
+        });
         refreshBalances();
       } else {
-        alert(`Execution failed: ${result.error}`);
+        toast.error('Execution failed', { description: result.error });
       }
     } catch (error: unknown) {
       console.error("Dashboard execution error:", error);
       const message = error instanceof Error ? error.message : String(error);
-      alert(`Transaction failed: ${message}`);
+      toast.error('Transaction failed', { description: message });
     } finally {
       setIsExecuting(false);
     }

@@ -35,6 +35,7 @@ export const metadata: Metadata = {
 import { StellarProvider } from '@/context/StellarContext';
 import { SideNavBar } from '@/components/SideNavBar';
 import { TopNavBar } from '@/components/TopNavBar';
+import { Toaster } from 'sonner';
 
 export default function RootLayout({
   children,
@@ -62,6 +63,7 @@ export default function RootLayout({
             </main>
           </div>
         </StellarProvider>
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );

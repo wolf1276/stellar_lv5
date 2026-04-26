@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { useStellar } from '@/context/StellarContext';
 import { stellar } from '@/lib/stellar-helper';
 import { calculateOpportunityScore } from '@/lib/scoring';
@@ -22,7 +23,12 @@ export default function ArbitrageExecutionPage() {
   }, []);
 
   const handleExecuteArb = async () => {
-    if (!address || !kit) return alert("Please connect wallet first");
+    if (!address || !kit) {
+      toast.error('Connect your wallet to execute arbitrage.', {
+        description: 'Use the Connect button in the top-right corner.',
+      });
+      return;
+    }
     setIsExecuting(true);
     try {
       const xdr = await stellar.buildPaymentXDR(
@@ -39,18 +45,24 @@ export default function ArbitrageExecutionPage() {
       const result = await stellar.submitXDR(signedTxXdr);
 
       if (result.success) {
-        alert(`Arbitrage Transaction Successful!\nHash: ${result.hash}\nExplorer: ${stellar.getExplorerLink(result.hash)}`);
+        toast.success('Arbitrage transaction successful!', {
+          description: `Hash: ${result.hash?.substring(0, 16)}...`,
+          action: {
+            label: 'View Explorer',
+            onClick: () => window.open(stellar.getExplorerLink(result.hash), '_blank'),
+          },
+        });
         refreshBalances();
       } else {
-        alert(`Execution failed: ${result.error}`);
+        toast.error('Execution failed', { description: result.error });
       }
     } catch (e: unknown) {
       console.error("Arb execution error:", e);
       const message = e instanceof Error ? e.message : String(e);
       if (message.includes("User rejected")) {
-        alert("Transaction was rejected by the user.");
+        toast.warning('Transaction rejected', { description: 'You cancelled the signing request.' });
       } else {
-        alert(`Execution error: ${message}`);
+        toast.error('Execution error', { description: message });
       }
     } finally {
       setIsExecuting(false);
