@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { searchIndex, SearchItem } from '@/lib/search-index';
+import { useStellar } from '@/context/StellarContext';
 
 const WalletConnection = dynamic(() => import('./WalletConnection'), {
   ssr: false,
@@ -14,10 +15,13 @@ const WalletConnection = dynamic(() => import('./WalletConnection'), {
 
 export const TopNavBar = () => {
   const router = useRouter();
+  const { notifications, clearAlerts } = useStellar();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const notifRef = useRef<HTMLDivElement>(null);
 
   // Filter search index on query change
   useEffect(() => {
@@ -37,11 +41,14 @@ export const TopNavBar = () => {
     setIsOpen(true);
   }, [query]);
 
-  // Close dropdown on outside click
+  // Close dropdowns on outside click
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
         setIsOpen(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setShowNotifications(false);
       }
     };
     document.addEventListener('mousedown', handleClick);
@@ -123,9 +130,56 @@ export const TopNavBar = () => {
       </div>
 
       <div className="flex items-center space-x-6 flex-shrink-0">
-        <button className="text-slate hover:text-ink transition-colors flex items-center">
-          <span className="material-symbols-outlined text-[22px]">notifications</span>
-        </button>
+        {/* Notification Bell with Badge */}
+        <div ref={notifRef} className="relative">
+          <button
+            onClick={() => setShowNotifications((v) => !v)}
+            className="text-slate hover:text-ink transition-colors flex items-center relative"
+          >
+            <span className="material-symbols-outlined text-[22px]">notifications</span>
+            {notifications.length > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary text-ink text-[9px] font-bold rounded-full flex items-center justify-center leading-none">
+                {notifications.length > 9 ? '9+' : notifications.length}
+              </span>
+            )}
+          </button>
+
+          {showNotifications && (
+            <div className="absolute top-full right-0 mt-2 w-80 bg-white border border-border-light rounded-md shadow-binance z-50 overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-border-light">
+                <span className="text-xs font-bold text-ink uppercase tracking-widest">Alerts</span>
+                {notifications.length > 0 && (
+                  <button onClick={clearAlerts} className="text-[10px] text-slate hover:text-ink font-medium">
+                    Clear all
+                  </button>
+                )}
+              </div>
+              {notifications.length === 0 ? (
+                <div className="px-4 py-8 text-center">
+                  <span className="material-symbols-outlined text-slate text-2xl">notifications_none</span>
+                  <p className="text-xs text-slate mt-2">No alerts yet</p>
+                </div>
+              ) : (
+                <div className="max-h-72 overflow-y-auto divide-y divide-border-light">
+                  {notifications.map((n) => (
+                    <div key={n.id} className="px-4 py-3 hover:bg-snow transition-colors">
+                      <div className="flex items-start gap-2">
+                        <span className={`material-symbols-outlined text-base mt-0.5 ${n.type === 'opportunity' ? 'text-primary' : n.type === 'success' ? 'text-crypto-green' : 'text-slate'}`}>
+                          {n.type === 'opportunity' ? 'bolt' : n.type === 'success' ? 'check_circle' : 'warning'}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-bold text-ink">{n.title}</p>
+                          <p className="text-[11px] text-slate mt-0.5 truncate">{n.description}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
         <button className="text-slate hover:text-ink transition-colors flex items-center">
           <span className="material-symbols-outlined text-[22px]">settings</span>
         </button>

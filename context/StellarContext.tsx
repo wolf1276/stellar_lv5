@@ -11,6 +11,17 @@ interface StellarContextType {
   refreshBalances: () => Promise<void>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   kit: any;
+  notifications: AppAlert[];
+  addAlert: (alert: Omit<AppAlert, 'id' | 'timestamp'>) => void;
+  clearAlerts: () => void;
+}
+
+export interface AppAlert {
+  id: string;
+  type: 'opportunity' | 'success' | 'warning';
+  title: string;
+  description: string;
+  timestamp: number;
 }
 
 const StellarContext = createContext<StellarContextType | undefined>(undefined);
@@ -40,6 +51,16 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [kit, setKit] = useState<any>(null);
+  const [notifications, setNotifications] = useState<AppAlert[]>([]);
+
+  const addAlert = useCallback((alert: Omit<AppAlert, 'id' | 'timestamp'>) => {
+    setNotifications((prev) => [
+      { ...alert, id: crypto.randomUUID(), timestamp: Date.now() },
+      ...prev.slice(0, 19), // keep max 20
+    ]);
+  }, []);
+
+  const clearAlerts = useCallback(() => setNotifications([]), []);
 
   // Initialize the kit with an instance (required for v2.x)
   useEffect(() => {
@@ -100,7 +121,10 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
       setAddress, 
       balances, 
       refreshBalances, 
-      kit
+      kit,
+      notifications,
+      addAlert,
+      clearAlerts,
     }}>
       {children}
     </StellarContext.Provider>
