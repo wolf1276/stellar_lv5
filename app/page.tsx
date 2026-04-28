@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { stellar } from '@/lib/stellar-helper';
 import { useStellar } from '@/context/StellarContext';
 import { DashboardModals } from '@/components/DashboardModals';
-import { nativeToScVal } from '@stellar/stellar-sdk';
+import { nativeToScVal, Address, xdr as StellarXdr } from '@stellar/stellar-sdk';
 
 // ⚠️  Replace with your deployed ArbExecutor contract ID after running:
 // stellar contract deploy --wasm target/wasm32-unknown-unknown/release/arb_executor.wasm --network testnet
@@ -51,43 +51,46 @@ export default function MainDashboardPage() {
 
     setIsExecuting(true);
     try {
-      // 1. Prepare steps (Triangular: XLM -> USDC -> AQUA -> XLM)
-      // Token addresses for Stellar Testnet:
-      // XLM SAC (Stellar Asset Contract for native XLM):
-      //   CDLZFC3SYJYDZT7K67VZ75HPJVIEWCEUNHQUBSVOMOMK22M7Z3RVJ6Z3
-      // USDC SAC on testnet — get via:
-      //   stellar contract id asset --asset USDC:GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN --network testnet
       const TESTNET_XLM_SAC  = "CDLZFC3SYJYDZT7K67VZ75HPJVIEWCEUNHQUBSVOMOMK22M7Z3RVJ6Z3";
-      const TESTNET_USDC_SAC = "CA2E53VHFZ6YSWQIEIPBXJQGT6VW3VKWWZO555XKRQXYJ63GEBJJGHY7"; // USDC SAC on testnet
+      const TESTNET_USDC_SAC = "CA2E53VHFZ6YSWQIEIPBXJQGT6VW3VKWWZO555XKRQXYJ63GEBJJGHY7";
+      // NOTE: pool must be a Soroban AMM contract (C-address).
+      // GBBD67... is a classic G-address; replace with a real Soroswap/Phoenix pool.
+      const POOL_ADDRESS = "GBBD67IF65Y6XGIBYI4L6T5XTA6O5PWHSTWVCX6O36S67554YTSAWBXI";
 
-      const steps = [
-        {
-          pool: "GBBD67IF65Y6XGIBYI4L6T5XTA6O5PWHSTWVCX6O36S67554YTSAWBXI", // XLM/USDC AMM pool
-          token_in: TESTNET_XLM_SAC,
-          token_out: TESTNET_USDC_SAC,
-          min_out: 0n,
-        },
-        // Additional steps go here for triangular route
-      ];
+      // Explicitly build SwapStep XDR: address fields must be scvAddress, not scvString.
+      const buildSwapStep = (
+        pool: string,
+        tokenIn: string,
+        tokenOut: string,
+        minOut: bigint
+      ): StellarXdr.ScVal =>
+        StellarXdr.ScVal.scvMap([
+          new StellarXdr.ScMapEntry({ key: StellarXdr.ScVal.scvSymbol('min_out'),   val: nativeToScVal(minOut, { type: 'i128' }) }),
+          new StellarXdr.ScMapEntry({ key: StellarXdr.ScVal.scvSymbol('pool'),      val: new Address(pool).toScVal() }),
+          new StellarXdr.ScMapEntry({ key: StellarXdr.ScVal.scvSymbol('token_in'),  val: new Address(tokenIn).toScVal() }),
+          new StellarXdr.ScMapEntry({ key: StellarXdr.ScVal.scvSymbol('token_out'), val: new Address(tokenOut).toScVal() }),
+        ]);
 
-      const amountIn = 10000000000n;    // 1000 XLM (7 decimals)
-      const minAmountOut = 10120000000n; // 1012 XLM — requires ≥1.2% profit
+      const amountIn     = 10000000000n;
+      const minAmountOut = 10120000000n;
 
       const scArgs = [
-        nativeToScVal(steps),
-        nativeToScVal(amountIn, { type: 'i128' }),
+        StellarXdr.ScVal.scvVec([
+          buildSwapStep(POOL_ADDRESS, TESTNET_XLM_SAC, TESTNET_USDC_SAC, 0n),
+        ]),
+        nativeToScVal(amountIn,     { type: 'i128' }),
         nativeToScVal(minAmountOut, { type: 'i128' }),
       ];
 
       // 2. Build Invoke Contract XDR
-      const xdr = await stellar.buildInvokeContractXDR(
+      const unsignedXdr = await stellar.buildInvokeContractXDR(
         address,
         ARB_EXECUTOR_CONTRACT_ID,
         "execute_arbitrage",
         scArgs
       );
       
-      const { signedTxXdr } = await kit.signTransaction(xdr, {
+      const { signedTxXdr } = await kit.signTransaction(unsignedXdr, {
         networkPassphrase: "Test SDF Network ; September 2015"
       });
       const result = await stellar.submitXDR(signedTxXdr);
