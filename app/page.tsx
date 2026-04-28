@@ -58,7 +58,7 @@ export default function MainDashboardPage() {
       // USDC SAC on testnet — get via:
       //   stellar contract id asset --asset USDC:GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN --network testnet
       const TESTNET_XLM_SAC  = "CDLZFC3SYJYDZT7K67VZ75HPJVIEWCEUNHQUBSVOMOMK22M7Z3RVJ6Z3";
-      const TESTNET_USDC_SAC = "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA"; // ← update after running CLI cmd above
+      const TESTNET_USDC_SAC = "CA2E53VHFZ6YSWQIEIPBXJQGT6VW3VKWWZO555XKRQXYJ63GEBJJGHY7"; // USDC SAC on testnet
 
       const steps = [
         {
