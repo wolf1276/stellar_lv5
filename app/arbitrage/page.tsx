@@ -8,7 +8,7 @@ import { calculateOpportunityScore } from '@/lib/scoring';
 import { nativeToScVal } from '@stellar/stellar-sdk';
 
 // Replace with your actual deployed contract ID
-const ARB_EXECUTOR_CONTRACT_ID = "C...YOUR_CONTRACT_ID";
+const ARB_EXECUTOR_CONTRACT_ID = "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA";
 
 export default function ArbitrageExecutionPage() {
   const { address, balances, refreshBalances, kit } = useStellar();
