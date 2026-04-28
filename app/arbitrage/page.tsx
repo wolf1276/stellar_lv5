@@ -49,8 +49,8 @@ export default function ArbitrageExecutionPage() {
       const steps = [
         {
           pool: "GBBD67IF65Y6XGIBYI4L6T5XTA6O5PWHSTWVCX6O36S67554YTSAWBXI", // XLM/USDC Pool
-          token_in: "CDLZFC3SYJYDZT7K67VZ75HPJVIEWCEUNHQUBSVOMOMK22M7Z3RVJ6Z3", // XLM Native Asset Contract ID on Testnet
-          token_out: "CCW6S4S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7", // USDC Contract ID
+          token_in: "CDLZFC3SYJYDZT7K67VZ75HPJVIEWCEUNHQUBSVOMOMK22M7Z3RVJ6Z3", // XLM Native Asset Contract on Testnet
+          token_out: "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA", // USDC on Testnet (update if you have the real address)
           min_out: 1100n, // Use BigInt so it maps to i128 in Soroban
         },
         // Additional steps would go here
