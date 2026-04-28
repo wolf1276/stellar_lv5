@@ -8,7 +8,8 @@ import { useStellar } from '@/context/StellarContext';
 import { DashboardModals } from '@/components/DashboardModals';
 import { nativeToScVal } from '@stellar/stellar-sdk';
 
-// Replace with your actual deployed contract ID
+// ⚠️  Replace with your deployed ArbExecutor contract ID after running:
+// stellar contract deploy --wasm target/wasm32-unknown-unknown/release/arb_executor.wasm --network testnet
 const ARB_EXECUTOR_CONTRACT_ID = "C...YOUR_CONTRACT_ID";
 
 export default function MainDashboardPage() {
@@ -51,23 +52,31 @@ export default function MainDashboardPage() {
     setIsExecuting(true);
     try {
       // 1. Prepare steps (Triangular: XLM -> USDC -> AQUA -> XLM)
+      // Token addresses for Stellar Testnet:
+      // XLM SAC (Stellar Asset Contract for native XLM):
+      //   CDLZFC3SYJYDZT7K67VZ75HPJVIEWCEUNHQUBSVOMOMK22M7Z3RVJ6Z3
+      // USDC SAC on testnet — get via:
+      //   stellar contract id asset --asset USDC:GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN --network testnet
+      const TESTNET_XLM_SAC  = "CDLZFC3SYJYDZT7K67VZ75HPJVIEWCEUNHQUBSVOMOMK22M7Z3RVJ6Z3";
+      const TESTNET_USDC_SAC = "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA"; // ← update after running CLI cmd above
+
       const steps = [
         {
-          pool: "GBBD67IF65Y6XGIBYI4L6T5XTA6O5PWHSTWVCX6O36S67554YTSAWBXI",
-          token_in: "native",
-          token_out: "CCW6S4S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7", // Example USDC ID
+          pool: "GBBD67IF65Y6XGIBYI4L6T5XTA6O5PWHSTWVCX6O36S67554YTSAWBXI", // XLM/USDC AMM pool
+          token_in: TESTNET_XLM_SAC,
+          token_out: TESTNET_USDC_SAC,
           min_out: 0n,
         },
-        // Additional steps...
+        // Additional steps go here for triangular route
       ];
 
-      const amountIn = 10000000000n; // 1000 XLM
-      const minAmountOut = 10120000000n; // 1.2% profit
+      const amountIn = 10000000000n;    // 1000 XLM (7 decimals)
+      const minAmountOut = 10120000000n; // 1012 XLM — requires ≥1.2% profit
 
       const scArgs = [
         nativeToScVal(steps),
-        nativeToScVal(amountIn),
-        nativeToScVal(minAmountOut),
+        nativeToScVal(amountIn, { type: 'i128' }),
+        nativeToScVal(minAmountOut, { type: 'i128' }),
       ];
 
       // 2. Build Invoke Contract XDR
