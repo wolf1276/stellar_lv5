@@ -49,9 +49,9 @@ export default function ArbitrageExecutionPage() {
       const steps = [
         {
           pool: "GBBD67IF65Y6XGIBYI4L6T5XTA6O5PWHSTWVCX6O36S67554YTSAWBXI", // XLM/USDC Pool
-          token_in: "native",
+          token_in: "CDLZFC3SYJYDZT7K67VZ75HPJVIEWCEUNHQUBSVOMOMK22M7Z3RVJ6Z3", // XLM Native Asset Contract ID on Testnet
           token_out: "CCW6S4S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7S7", // USDC Contract ID
-          min_out: 1100, // Simulated min out
+          min_out: 1100n, // Use BigInt so it maps to i128 in Soroban
         },
         // Additional steps would go here
       ];
@@ -62,8 +62,8 @@ export default function ArbitrageExecutionPage() {
 
       const scArgs = [
         nativeToScVal(steps),
-        nativeToScVal(amountIn),
-        nativeToScVal(minAmountOut),
+        nativeToScVal(amountIn, { type: 'i128' }),
+        nativeToScVal(minAmountOut, { type: 'i128' }),
       ];
 
       // 3. Build Invoke Contract XDR
