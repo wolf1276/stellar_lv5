@@ -97,20 +97,24 @@ class StellarHelper {
     try {
       const account = await this.server.loadAccount(address);
       const contract = new Contract(contractId);
-      
+
       const tx = new TransactionBuilder(account, {
-        fee: "10000", // Base fee for Soroban
+        fee: "100", // base fee; will be replaced by simulation result
         networkPassphrase: Networks.TESTNET,
       })
-        .addOperation(
-          contract.call(functionName, ...args)
-        )
+        .addOperation(contract.call(functionName, ...args))
         .setTimeout(60)
         .build();
 
-      // Note: In a production app, we would use simulateTransaction to get the correct fee and footprint
-      // For this challenge, we'll return the built XDR for signing
-      return tx.toXDR();
+      // Simulate to get correct fee + ledger footprint (required for Soroban)
+      const simResult = await this.rpcServer.simulateTransaction(tx);
+      if (rpc.Api.isSimulationError(simResult)) {
+        throw new Error(`Soroban simulation failed: ${simResult.error}`);
+      }
+
+      // assembleTransaction attaches the auth + resource data from simulation
+      const preparedTx = rpc.assembleTransaction(tx, simResult).build();
+      return preparedTx.toXDR();
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
       throw new Error(`Soroban invocation building failed: ${message}`);
@@ -155,15 +159,34 @@ class StellarHelper {
   async submitXDR(signedXDR: string): Promise<TransactionResponse> {
     try {
       const tx = TransactionBuilder.fromXDR(signedXDR, Networks.TESTNET);
-      
-      // If it's a Soroban transaction, we might want to use the RPC server
-      // But for simplicity, we'll use Horizon which also handles it
+
+      // Soroban transactions must use the RPC server, not Horizon
+      const isSoroban = tx.operations.some(
+        (op) => op.type === 'invokeHostFunction'
+      );
+
+      if (isSoroban) {
+        const sendResult = await this.rpcServer.sendTransaction(tx);
+        if (sendResult.status === 'ERROR') {
+          return { success: false, error: `RPC error: ${JSON.stringify(sendResult.errorResult)}` };
+        }
+        // Poll for confirmation
+        let getResult = await this.rpcServer.getTransaction(sendResult.hash);
+        let attempts = 0;
+        while (getResult.status === rpc.Api.GetTransactionStatus.NOT_FOUND && attempts < 20) {
+          await new Promise(r => setTimeout(r, 1500));
+          getResult = await this.rpcServer.getTransaction(sendResult.hash);
+          attempts++;
+        }
+        if (getResult.status === rpc.Api.GetTransactionStatus.SUCCESS) {
+          return { success: true, hash: sendResult.hash };
+        }
+        return { success: false, error: `Transaction failed or timed out. Status: ${getResult.status}` };
+      }
+
+      // Classic (non-Soroban) transactions go through Horizon
       const result = await this.server.submitTransaction(tx);
-      
-      return {
-        success: true,
-        hash: result.hash
-      };
+      return { success: true, hash: result.hash };
     } catch (error: unknown) {
       console.error("Submission failed", error);
       let errorMessage = error instanceof Error ? error.message : String(error);

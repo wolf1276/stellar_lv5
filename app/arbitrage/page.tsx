@@ -45,12 +45,17 @@ export default function ArbitrageExecutionPage() {
 
     setIsExecuting(true);
     try {
-      // 1. Prepare steps (Simulation of a triangular arbitrage: XLM -> USDC -> yXLM -> XLM)
+      // Real Stellar Testnet Soroban Asset Contract (SAC) addresses:
+      // XLM SAC: CDLZFC3SYJYDZT7K67VZ75HPJVIEWCEUNHQUBSVOMOMK22M7Z3RVJ6Z3
+      // USDC SAC: run `stellar contract id asset --asset USDC:GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN --network testnet`
+      const TESTNET_XLM_SAC  = "CDLZFC3SYJYDZT7K67VZ75HPJVIEWCEUNHQUBSVOMOMK22M7Z3RVJ6Z3";
+      const TESTNET_USDC_SAC = "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA"; // ← update after CLI cmd
+
       const steps = [
         {
           pool: "GBBD67IF65Y6XGIBYI4L6T5XTA6O5PWHSTWVCX6O36S67554YTSAWBXI", // XLM/USDC Pool
-          token_in: "CDLZFC3SYJYDZT7K67VZ75HPJVIEWCEUNHQUBSVOMOMK22M7Z3RVJ6Z3", // XLM Native Asset Contract on Testnet
-          token_out: "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA", // USDC on Testnet (update if you have the real address)
+          token_in: TESTNET_XLM_SAC,
+          token_out: TESTNET_USDC_SAC,
           min_out: 1100n, // Use BigInt so it maps to i128 in Soroban
         },
         // Additional steps would go here
